@@ -28,6 +28,8 @@ public class MenuFrame extends JFrame implements MouseListener {
 
 	JPanel menu_pane;
 	JPanel playonline_menu_pane;
+	JPanel grid_menu;
+	JPanel grid_playonline_menu;
 	JLabel single, quit, twoplayer, playonline;
 	JLabel createroom, joinroom, back;
 	Color bg_color = Color.decode("#efd39c");
@@ -50,12 +52,12 @@ public class MenuFrame extends JFrame implements MouseListener {
 		playonline.addMouseListener(this);
 		quit.addMouseListener(this);
 
-		JPanel pane = new JPanel(new GridLayout(4, 1));
-		pane.add(single);
-		pane.add(twoplayer);
-		pane.add(playonline);
-		pane.add(quit);
-		menu_pane.add(pane, BorderLayout.SOUTH);
+		grid_menu = new JPanel(new GridLayout(4, 1));
+		grid_menu.add(single);
+		grid_menu.add(twoplayer);
+		grid_menu.add(playonline);
+		grid_menu.add(quit);
+		menu_pane.add(grid_menu, BorderLayout.SOUTH);
 		menu_pane.setBorder(BorderFactory.createEmptyBorder(420, 20, 20, 0));
 		// pane.setBackground(bg_color);
 		pack();
@@ -121,29 +123,33 @@ public class MenuFrame extends JFrame implements MouseListener {
 		if (source == quit) {
 			quit();
 		} else if (source == playonline) {
-			playonline_menu_pane = new PlayOnlinePane();
-			setContentPane(playonline_menu_pane);
-			
-			JPanel pane = new JPanel(new GridLayout(3, 1));
-			pane.add(createroom);
-			pane.add(joinroom);
-			pane.add(back);
+			//playonline_menu_pane = new PlayOnlinePane();
+			//setContentPane(playonline_menu_pane);
+			menu_pane.remove(grid_menu);
+		grid_playonline_menu = new JPanel(new GridLayout(3, 1));
+		grid_playonline_menu.add(createroom);
+		grid_playonline_menu.add(joinroom);
+		grid_playonline_menu.add(back);
 			
 			createroom.addMouseListener(this);
 			joinroom.addMouseListener(this);
 			back.addMouseListener(this);
 			
-			playonline_menu_pane.add(pane, BorderLayout.SOUTH);
-			playonline_menu_pane.setBorder(BorderFactory.createEmptyBorder(420, 20, 20, 0));
+			menu_pane.add(grid_playonline_menu, BorderLayout.SOUTH);
+			menu_pane.setBorder(BorderFactory.createEmptyBorder(420, 20, 20, 0));
 			
 			pack();
 			Dimension size = getSize();
 			setSize(size);
 		} else if(source == back)
 		{
-			setContentPane(menu_pane);
+			//setContentPane(menu_pane);
+			menu_pane.remove(grid_playonline_menu);
+			menu_pane.add(grid_menu, BorderLayout.SOUTH);
+			menu_pane.setBorder(BorderFactory.createEmptyBorder(420, 20, 20, 0));
 			pack();
-			
+			Dimension size = getSize();
+			setSize(size);
 		}
 
 	}
