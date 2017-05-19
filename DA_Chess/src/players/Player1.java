@@ -1498,18 +1498,19 @@ public class Player1 {
 		{
 			if(inHand!=i)
 			{
-				//neu quân hiện tại đang chọn khác với quân duyệt
-				flag=checkWay(newP, enemy.returnPosition(i), inHand);
-				
-			}
-			else
-			{
-				flag=checkWay(newP, returnPosition(i) ,inHand);
-				
-			}
-			if(flag==true)
-			{
-				return false; // ở vị trí này có quân cờ
+				 if(i<17)
+				 {
+					 flag=checkWay(newP, enemy.returnPosition(i), inHand);
+				 }
+				 else
+					{
+						flag=checkWay(newP, returnPosition(i) ,inHand);
+						
+					}
+				 if(flag==true)
+					{
+						return false; // ở vị trí này có quân cờ
+					}
 			}
 		}
 		return true;
