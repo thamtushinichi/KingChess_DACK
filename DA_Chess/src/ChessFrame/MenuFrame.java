@@ -9,6 +9,10 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -17,12 +21,19 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+
 
 public class MenuFrame extends JFrame implements MouseListener {
 
@@ -33,6 +44,10 @@ public class MenuFrame extends JFrame implements MouseListener {
 	JLabel single, quit, twoplayer, playonline;
 	JLabel createroom, joinroom, back;
 	Color bg_color = Color.decode("#efd39c");
+	
+	private PlayOnlineDialog create_dlg;
+	private PlayOnlineDialog join_dlg;
+	private boolean mouse_state = true;
 
 	public MenuFrame() {
 		menu_pane = new MenuPane();
@@ -51,6 +66,10 @@ public class MenuFrame extends JFrame implements MouseListener {
 		twoplayer.addMouseListener(this);
 		playonline.addMouseListener(this);
 		quit.addMouseListener(this);
+		
+		createroom.addMouseListener(this);
+		joinroom.addMouseListener(this);
+		back.addMouseListener(this);
 
 		grid_menu = new JPanel(new GridLayout(4, 1));
 		grid_menu.add(single);
@@ -115,10 +134,101 @@ public class MenuFrame extends JFrame implements MouseListener {
 
 	}
 	
-	
+	public class PlayOnlineDialog extends JDialog {
+	    
+		private final JButton button1;
+	    private final JButton button2;
+	    private final JPanel panel=new JPanel();
+	    
+	    private final JLabel IP_address=new JLabel(" IP Address : ");
+	    private final JLabel Port_number=new JLabel(" Port : ");
+	    private final JTextField ip_text=new JTextField(12);
+	    private final JTextField port_text=new JTextField(5);
+	    
+	    public PlayOnlineDialog(int choice) {
+
+	        setSize(330,180);
+	        setLocation(500,300);
+	        panel.setLayout(null);
+	        Container cp=getContentPane();
+	        
+	        panel.setSize(330,180);
+	        
+	        if(choice == 0){
+	        	button1=new JButton("Create");
+	 	        button2=new JButton("Cancel");
+	        } else{
+	        	 button1=new JButton("Join");
+	 	        button2=new JButton("Cancel");
+	        }
+	       
+	        
+	        button1.setSize(80,24);
+	        button2.setSize(80,24);
+	        
+	        button1.setLocation(70,100);
+	        button2.setLocation(170,100);
+	        
+	        IP_address.setSize(80,24);
+	        IP_address.setLocation(20,20);
+	        
+	        ip_text.setSize(150,24);
+	        ip_text.setLocation(130,20);
+	        
+	        Port_number.setSize(80,24);
+	        Port_number.setLocation(20,50);
+	        
+	        port_text.setSize(150,24);
+	        port_text.setLocation(130,50);
+	        
+	        button1.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	            	mouse_state = true;
+	                dispose();
+	            }
+	        });
+	        button2.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	            	mouse_state = true;
+	                dispose();
+	            }
+	        });
+	        
+	        
+	        panel.setLayout(null);
+	        
+	        panel.add(button1);
+	        panel.add(button2);
+	        panel.add(IP_address);
+	        panel.add(ip_text);
+	        panel.add(Port_number);
+	        panel.add(port_text);
+	        
+	        cp.add(panel);
+	        
+	        if(choice == 0){
+	        	ip_text.setText("127.0.0.1");
+		        port_text.setText("5000");
+	        }
+	    }
+
+	    public String GetIpAddress() {
+	        return ip_text.getText();
+	    }
+	    
+	    public String GetPortnumber() {
+	        return port_text.getText();
+	    }
+	    public void paintComponents(Graphics g) {
+	        super.paintComponents(g);
+	        
+	    }
+	    
+	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+<<<<<<< HEAD
 		Object source = e.getSource();
 		if (source == quit) {
 			quit();
@@ -148,50 +258,99 @@ public class MenuFrame extends JFrame implements MouseListener {
 			pack();
 			Dimension size = getSize();
 			setSize(size);
+=======
+		if(mouse_state == false){
+			return;
+		} else{
+			Object source = e.getSource();
+			if (source == quit) {
+				quit();
+			} else if (source == playonline) {
+				//playonline_menu_pane = new PlayOnlinePane();
+				//setContentPane(playonline_menu_pane);
+				menu_pane.remove(grid_menu);
+				
+				grid_playonline_menu = new JPanel(new GridLayout(3, 1));
+				grid_playonline_menu.add(createroom);
+				grid_playonline_menu.add(joinroom);
+				grid_playonline_menu.add(back);
+				
+				menu_pane.add(grid_playonline_menu, BorderLayout.SOUTH);
+				menu_pane.setBorder(BorderFactory.createEmptyBorder(420, 20, 20, 0));
+				
+				pack();
+				Dimension size = getSize();
+				setSize(size);
+			} else if(source == back){
+				//setContentPane(menu_pane);
+				menu_pane.remove(grid_playonline_menu);
+				menu_pane.add(grid_menu, BorderLayout.SOUTH);
+				menu_pane.setBorder(BorderFactory.createEmptyBorder(420, 20, 20, 0));
+				pack();
+				Dimension size = getSize();
+				setSize(size);
+			} else if(source == createroom){
+				create_dlg = new PlayOnlineDialog(0);
+				create_dlg.setTitle("Create Room");
+				create_dlg.setVisible(true);
+				mouse_state = false;
+			} else if(source == joinroom){
+				join_dlg = new PlayOnlineDialog(1);
+				join_dlg.setTitle("Join Room");
+				join_dlg.setVisible(true);
+				mouse_state = false;
+			}
+>>>>>>> origin/master
 		}
-
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		Object source = e.getSource();
-		if (source == single) {
-			single.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/single_hover.png")));
-		} else if (source == twoplayer) {
-			twoplayer.setIcon(
-					new ImageIcon(getClass().getClassLoader().getResource("resources/images/twoplayer_hover.png")));
-		} else if (source == playonline) {
-			playonline.setIcon(
-					new ImageIcon(getClass().getClassLoader().getResource("resources/images/playonline_hover.png")));
-		} else if (source == quit) {
-			quit.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/quit_hover.png")));
-		} else if (source == createroom) {
-			createroom.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/createroom_hover.png")));
-		} else if (source == joinroom) {
-			joinroom.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/joinroom_hover.png")));
-		} else if (source == back) {
-			back.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/back_hover.png")));
+		if(mouse_state == false){
+			return;
+		} else{
+			Object source = e.getSource();
+			if (source == single) {
+				single.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/single_hover.png")));
+			} else if (source == twoplayer) {
+				twoplayer.setIcon(
+						new ImageIcon(getClass().getClassLoader().getResource("resources/images/twoplayer_hover.png")));
+			} else if (source == playonline) {
+				playonline.setIcon(
+						new ImageIcon(getClass().getClassLoader().getResource("resources/images/playonline_hover.png")));
+			} else if (source == quit) {
+				quit.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/quit_hover.png")));
+			} else if (source == createroom) {
+				createroom.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/createroom_hover.png")));
+			} else if (source == joinroom) {
+				joinroom.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/joinroom_hover.png")));
+			} else if (source == back) {
+				back.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/back_hover.png")));
+			}
 		}
-
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		Object source = e.getSource();
-		if (source == single) {
-			single.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/single.png")));
-		} else if (source == twoplayer) {
-			twoplayer.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/twoplayer.png")));
-		} else if (source == playonline) {
-			playonline.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/playonline.png")));
-		} else if (source == quit) {
-			quit.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/quit.png")));
-		} else if (source == createroom) {
-			createroom.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/createroom.png")));
-		} else if (source == joinroom) {
-			joinroom.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/joinroom.png")));
-		} else if (source == back) {
-			back.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/back.png")));
+		if(mouse_state == false){
+			return;
+		} else{
+			Object source = e.getSource();
+			if (source == single) {
+				single.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/single.png")));
+			} else if (source == twoplayer) {
+				twoplayer.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/twoplayer.png")));
+			} else if (source == playonline) {
+				playonline.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/playonline.png")));
+			} else if (source == quit) {
+				quit.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/quit.png")));
+			} else if (source == createroom) {
+				createroom.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/createroom.png")));
+			} else if (source == joinroom) {
+				joinroom.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/joinroom.png")));
+			} else if (source == back) {
+				back.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/back.png")));
+			}
 		}
 	}
 
@@ -215,8 +374,11 @@ public class MenuFrame extends JFrame implements MouseListener {
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 	}
 
+<<<<<<< HEAD
 	// panel sau khi nhan nut playonline
 	
 		
 	
+=======
+>>>>>>> origin/master
 }
