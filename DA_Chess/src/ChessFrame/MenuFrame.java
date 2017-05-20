@@ -47,6 +47,7 @@ public class MenuFrame extends JFrame implements MouseListener {
 	
 	private PlayOnlineDialog create_dlg;
 	private PlayOnlineDialog join_dlg;
+	private boolean mouse_state = true;
 
 	public MenuFrame() {
 		menu_pane = new MenuPane();
@@ -182,11 +183,13 @@ public class MenuFrame extends JFrame implements MouseListener {
 	        
 	        button1.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
+	            	mouse_state = true;
 	                dispose();
 	            }
 	        });
 	        button2.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
+	            	mouse_state = true;
 	                dispose();
 	            }
 	        });
@@ -225,85 +228,97 @@ public class MenuFrame extends JFrame implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		Object source = e.getSource();
-		if (source == quit) {
-			quit();
-		} else if (source == playonline) {
-			//playonline_menu_pane = new PlayOnlinePane();
-			//setContentPane(playonline_menu_pane);
-			menu_pane.remove(grid_menu);
-			
-			grid_playonline_menu = new JPanel(new GridLayout(3, 1));
-			grid_playonline_menu.add(createroom);
-			grid_playonline_menu.add(joinroom);
-			grid_playonline_menu.add(back);
-			
-			menu_pane.add(grid_playonline_menu, BorderLayout.SOUTH);
-			menu_pane.setBorder(BorderFactory.createEmptyBorder(420, 20, 20, 0));
-			
-			pack();
-			Dimension size = getSize();
-			setSize(size);
-		} else if(source == back){
-			//setContentPane(menu_pane);
-			menu_pane.remove(grid_playonline_menu);
-			menu_pane.add(grid_menu, BorderLayout.SOUTH);
-			menu_pane.setBorder(BorderFactory.createEmptyBorder(420, 20, 20, 0));
-			pack();
-			Dimension size = getSize();
-			setSize(size);
-		} else if(source == createroom){
-			create_dlg = new PlayOnlineDialog(0);
-			create_dlg.setTitle("Create Room");
-			create_dlg.setVisible(true);
-		} else if(source == joinroom){
-			join_dlg = new PlayOnlineDialog(1);
-			join_dlg.setTitle("Join Room");
-			join_dlg.setVisible(true);
-		} 
-
+		if(mouse_state == false){
+			return;
+		} else{
+			Object source = e.getSource();
+			if (source == quit) {
+				quit();
+			} else if (source == playonline) {
+				//playonline_menu_pane = new PlayOnlinePane();
+				//setContentPane(playonline_menu_pane);
+				menu_pane.remove(grid_menu);
+				
+				grid_playonline_menu = new JPanel(new GridLayout(3, 1));
+				grid_playonline_menu.add(createroom);
+				grid_playonline_menu.add(joinroom);
+				grid_playonline_menu.add(back);
+				
+				menu_pane.add(grid_playonline_menu, BorderLayout.SOUTH);
+				menu_pane.setBorder(BorderFactory.createEmptyBorder(420, 20, 20, 0));
+				
+				pack();
+				Dimension size = getSize();
+				setSize(size);
+			} else if(source == back){
+				//setContentPane(menu_pane);
+				menu_pane.remove(grid_playonline_menu);
+				menu_pane.add(grid_menu, BorderLayout.SOUTH);
+				menu_pane.setBorder(BorderFactory.createEmptyBorder(420, 20, 20, 0));
+				pack();
+				Dimension size = getSize();
+				setSize(size);
+			} else if(source == createroom){
+				create_dlg = new PlayOnlineDialog(0);
+				create_dlg.setTitle("Create Room");
+				create_dlg.setVisible(true);
+				mouse_state = false;
+			} else if(source == joinroom){
+				join_dlg = new PlayOnlineDialog(1);
+				join_dlg.setTitle("Join Room");
+				join_dlg.setVisible(true);
+				mouse_state = false;
+			}
+		}
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		Object source = e.getSource();
-		if (source == single) {
-			single.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/single_hover.png")));
-		} else if (source == twoplayer) {
-			twoplayer.setIcon(
-					new ImageIcon(getClass().getClassLoader().getResource("resources/images/twoplayer_hover.png")));
-		} else if (source == playonline) {
-			playonline.setIcon(
-					new ImageIcon(getClass().getClassLoader().getResource("resources/images/playonline_hover.png")));
-		} else if (source == quit) {
-			quit.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/quit_hover.png")));
-		} else if (source == createroom) {
-			createroom.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/createroom_hover.png")));
-		} else if (source == joinroom) {
-			joinroom.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/joinroom_hover.png")));
-		} else if (source == back) {
-			back.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/back_hover.png")));
+		if(mouse_state == false){
+			return;
+		} else{
+			Object source = e.getSource();
+			if (source == single) {
+				single.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/single_hover.png")));
+			} else if (source == twoplayer) {
+				twoplayer.setIcon(
+						new ImageIcon(getClass().getClassLoader().getResource("resources/images/twoplayer_hover.png")));
+			} else if (source == playonline) {
+				playonline.setIcon(
+						new ImageIcon(getClass().getClassLoader().getResource("resources/images/playonline_hover.png")));
+			} else if (source == quit) {
+				quit.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/quit_hover.png")));
+			} else if (source == createroom) {
+				createroom.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/createroom_hover.png")));
+			} else if (source == joinroom) {
+				joinroom.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/joinroom_hover.png")));
+			} else if (source == back) {
+				back.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/back_hover.png")));
+			}
 		}
-
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		Object source = e.getSource();
-		if (source == single) {
-			single.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/single.png")));
-		} else if (source == twoplayer) {
-			twoplayer.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/twoplayer.png")));
-		} else if (source == playonline) {
-			playonline.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/playonline.png")));
-		} else if (source == quit) {
-			quit.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/quit.png")));
-		} else if (source == createroom) {
-			createroom.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/createroom.png")));
-		} else if (source == joinroom) {
-			joinroom.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/joinroom.png")));
-		} else if (source == back) {
-			back.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/back.png")));
+		if(mouse_state == false){
+			return;
+		} else{
+			Object source = e.getSource();
+			if (source == single) {
+				single.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/single.png")));
+			} else if (source == twoplayer) {
+				twoplayer.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/twoplayer.png")));
+			} else if (source == playonline) {
+				playonline.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/playonline.png")));
+			} else if (source == quit) {
+				quit.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/quit.png")));
+			} else if (source == createroom) {
+				createroom.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/createroom.png")));
+			} else if (source == joinroom) {
+				joinroom.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/joinroom.png")));
+			} else if (source == back) {
+				back.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/back.png")));
+			}
 		}
 	}
 
