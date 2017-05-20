@@ -58,7 +58,7 @@ public class MenuFrame extends JFrame implements MouseListener {
 		grid_menu.add(playonline);
 		grid_menu.add(quit);
 		menu_pane.add(grid_menu, BorderLayout.SOUTH);
-		menu_pane.setBorder(BorderFactory.createEmptyBorder(420, 20, 20, 0));
+		menu_pane.setBorder(BorderFactory.createEmptyBorder(380, 20, 20, 0));
 		// pane.setBackground(bg_color);
 		pack();
 		Dimension size = getSize();
@@ -134,10 +134,8 @@ public class MenuFrame extends JFrame implements MouseListener {
 			createroom.addMouseListener(this);
 			joinroom.addMouseListener(this);
 			back.addMouseListener(this);
-			
 			menu_pane.add(grid_playonline_menu, BorderLayout.SOUTH);
-			menu_pane.setBorder(BorderFactory.createEmptyBorder(420, 20, 20, 0));
-			
+			menu_pane.setBorder(BorderFactory.createEmptyBorder(380, 20, 20, 0));
 			pack();
 			Dimension size = getSize();
 			setSize(size);
@@ -146,7 +144,7 @@ public class MenuFrame extends JFrame implements MouseListener {
 			//setContentPane(menu_pane);
 			menu_pane.remove(grid_playonline_menu);
 			menu_pane.add(grid_menu, BorderLayout.SOUTH);
-			menu_pane.setBorder(BorderFactory.createEmptyBorder(420, 20, 20, 0));
+			menu_pane.setBorder(BorderFactory.createEmptyBorder(380, 20, 20, 0));
 			pack();
 			Dimension size = getSize();
 			setSize(size);
@@ -210,7 +208,7 @@ public class MenuFrame extends JFrame implements MouseListener {
 	}
 
 	public void quit() {
-		int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?", "MyChessmate1.1",
+		int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?", "Quit Game",
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 		if (option == JOptionPane.YES_OPTION)
 			System.exit(0);
@@ -218,52 +216,7 @@ public class MenuFrame extends JFrame implements MouseListener {
 	}
 
 	// panel sau khi nhan nut playonline
-	public class PlayOnlinePane extends JPanel implements MouseListener {
-		private ImageIcon bg;
-
-		public PlayOnlinePane(){
-			bg = new ImageIcon(getClass().getClassLoader().getResource("resources/images/KingChessBackground.jpg"));
-			setPreferredSize(new Dimension(960, 640));
-			addMouseListener(this);
-		}
+	
 		
-		@Override
-		public void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			Image image = bg.getImage(); // transform it
-			Image newimg = image.getScaledInstance(960, 640, java.awt.Image.SCALE_SMOOTH);
-			bg = new ImageIcon(newimg);
-			bg.paintIcon(this, g, 0, 0);
-		}
-		
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void mouseEntered(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void mouseExited(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-	}
+	
 }
