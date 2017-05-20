@@ -33,12 +33,7 @@ public class Player1 {
 		inHand = -1;
 		kingIsChecked = false;
 		Color = "white";
-		String fileSeparator = new String(System.getProperty("file.separator")); // lấy
-																					// dấu
-																					// chéo
-																					// ngược(
-																					// \
-																					// )
+		String fileSeparator = new String(System.getProperty("file.separator")); 
 		wr1 = new Rook("src" + fileSeparator + "resources" + fileSeparator + "images" + fileSeparator + "wr.gif", 1, 8);
 		wr2 = new Rook("src" + fileSeparator + "resources" + fileSeparator + "images" + fileSeparator + "wr.gif", 8, 8);
 		wn1 = new Knight("src" + fileSeparator + "resources" + fileSeparator + "images" + fileSeparator + "wn.gif", 2,

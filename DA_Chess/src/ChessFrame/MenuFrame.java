@@ -34,6 +34,8 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import ChessPane.MainGameBoardPane;
+
 
 public class MenuFrame extends JFrame implements MouseListener {
 
@@ -48,7 +50,7 @@ public class MenuFrame extends JFrame implements MouseListener {
 	private PlayOnlineDialog create_dlg;
 	private PlayOnlineDialog join_dlg;
 	private boolean mouse_state = true;
-
+	 private final MainGameBoardPane mainGameBoardPane=new MainGameBoardPane();
 	public MenuFrame() {
 		menu_pane = new MenuPane();
 		setContentPane(menu_pane);
@@ -249,7 +251,18 @@ public class MenuFrame extends JFrame implements MouseListener {
 			pack();
 			Dimension size = getSize();
 			setSize(size);
-		} else if(source == back)
+		} else if(source==twoplayer)
+		{
+			menu_pane.removeAll();
+			menu_pane.add(mainGameBoardPane,BorderLayout.CENTER);
+			menu_pane.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+			pack();
+			//Dimension size = getSize();
+			//setSize(size);
+			repaint();
+			
+		}
+		else if(source == back)
 		{
 			//setContentPane(menu_pane);
 			menu_pane.remove(grid_playonline_menu);
@@ -258,7 +271,7 @@ public class MenuFrame extends JFrame implements MouseListener {
 			pack();
 			Dimension size = getSize();
 			setSize(size);
-		}
+		} 
 		if(mouse_state == false){
 			return;
 		}

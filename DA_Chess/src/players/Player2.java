@@ -40,23 +40,23 @@ public class Player2 {
 																						// ngược(
 																						// \
 																						// )
-			br1 = new Rook("src" + fileSeparator + "resources" + fileSeparator + "images" + fileSeparator + "br.gif", 1, 8);
-			br2 = new Rook("src" + fileSeparator + "resources" + fileSeparator + "images" + fileSeparator + "br.gif", 8, 8);
+			br1 = new Rook("src" + fileSeparator + "resources" + fileSeparator + "images" + fileSeparator + "br.gif", 1, 1);
+			br2 = new Rook("src" + fileSeparator + "resources" + fileSeparator + "images" + fileSeparator + "br.gif", 8, 1);
 			bn1 = new Knight("src" + fileSeparator + "resources" + fileSeparator + "images" + fileSeparator + "bn.gif", 2,
-					8);
+					1);
 			bn2 = new Knight("src" + fileSeparator + "resources" + fileSeparator + "images" + fileSeparator + "bn.gif", 7,
-					8);
+					1);
 			bb1 = new Bishop("src" + fileSeparator + "resources" + fileSeparator + "images" + fileSeparator + "bb.gif", 3,
-					8);
+					1);
 			bb2 = new Bishop("src" + fileSeparator + "resources" + fileSeparator + "images" + fileSeparator + "bb.gif", 6,
-					8);
-			bq = new Queen("src" + fileSeparator + "resources" + fileSeparator + "images" + fileSeparator + "bq.gif", 4, 8);
-			bk = new King("src" + fileSeparator + "resources" + fileSeparator + "images" + fileSeparator + "bk.gif", 5, 8);
+					1);
+			bq = new Queen("src" + fileSeparator + "resources" + fileSeparator + "images" + fileSeparator + "bq.gif", 4, 1);
+			bk = new King("src" + fileSeparator + "resources" + fileSeparator + "images" + fileSeparator + "bk.gif", 5, 1);
 			// khởi tạo tốt
 			int j = 1;
 			for (int i = 0; i < 8; i++) {
 				bPawns[i] = new Pawn(
-						"src" + fileSeparator + "resources" + fileSeparator + "images" + fileSeparator + "bp.gif", j, 7);
+						"src" + fileSeparator + "resources" + fileSeparator + "images" + fileSeparator + "bp.gif", j, 2);
 				j++;
 			}
 		}

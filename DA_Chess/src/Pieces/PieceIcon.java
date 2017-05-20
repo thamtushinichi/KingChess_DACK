@@ -9,7 +9,7 @@ public class PieceIcon {
 	public PieceIcon(String pathName_Icon)
 	{
 		toolkit= Toolkit.getDefaultToolkit();
-		toolkit.getImage(pathName_Icon);
+		image=toolkit.getImage(pathName_Icon);
 	}
 	public Image getImage() {
 		return image;
