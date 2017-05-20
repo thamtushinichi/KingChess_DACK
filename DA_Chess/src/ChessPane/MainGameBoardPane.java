@@ -74,7 +74,8 @@ public class MainGameBoardPane extends JPanel{
 				}
 			}
 		}
+		return false;
 	}
 	//đổi vị trí
-	public boolean 
+	//public boolean 
 }

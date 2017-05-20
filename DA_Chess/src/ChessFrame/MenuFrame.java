@@ -228,7 +228,7 @@ public class MenuFrame extends JFrame implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-<<<<<<< HEAD
+
 		Object source = e.getSource();
 		if (source == quit) {
 			quit();
@@ -258,11 +258,12 @@ public class MenuFrame extends JFrame implements MouseListener {
 			pack();
 			Dimension size = getSize();
 			setSize(size);
-=======
+		}
 		if(mouse_state == false){
 			return;
-		} else{
-			Object source = e.getSource();
+		}
+		else{
+			 source = e.getSource();
 			if (source == quit) {
 				quit();
 			} else if (source == playonline) {
@@ -300,8 +301,8 @@ public class MenuFrame extends JFrame implements MouseListener {
 				join_dlg.setVisible(true);
 				mouse_state = false;
 			}
->>>>>>> origin/master
 		}
+		
 	}
 
 	@Override
@@ -373,12 +374,4 @@ public class MenuFrame extends JFrame implements MouseListener {
 			System.exit(0);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 	}
-
-<<<<<<< HEAD
-	// panel sau khi nhan nut playonline
-	
-		
-	
-=======
->>>>>>> origin/master
 }
