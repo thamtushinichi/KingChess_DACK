@@ -33,7 +33,7 @@ public class Player2 {
 			bPawns = new Pawn[8];
 			inHand = -1;
 			kingIsChecked = false;
-			Color = "white";
+			Color = "black";
 			String fileSeparator = new String(System.getProperty("file.separator")); // lấy
 																						// dấu
 																						// chéo
@@ -486,7 +486,7 @@ public class Player2 {
 	    		}
 	    	}
 	    	inHand=-1;
-			return false;
+			return true;
 	    }
 		public boolean see_EnemyKingIsChecked(Player1 white) {
 			Point My_King_Position = this.bk.returnPosition();
@@ -1018,6 +1018,7 @@ public class Player2 {
 	    			enemy.changePosition(other, piece_Is_Killed_To_Protect_King);
 	    			something_killed=false;
 	    		}
+		       
 		        return true;
 		}
 		public boolean KnightGenerate_Moves(Player1 enemy,Knight bKnight)

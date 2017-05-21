@@ -480,7 +480,7 @@ public class Player1 {
     		}
     	}
     	inHand=-1;
-		return false;
+		return true;
     }
 	public boolean see_EnemyKingIsChecked(Player2 black) {
 		Point My_King_Position = wk.returnPosition();
