@@ -46,7 +46,13 @@ public class MenuFrame extends JFrame implements MouseListener {
 	JLabel single, quit, twoplayer, playonline;
 	JLabel createroom, joinroom, back;
 	Color bg_color = Color.decode("#efd39c");
+	//set up 
+	private boolean this_is_Server;
+	private boolean this_is_Client;
+	private String myIp_Address;
+	private String myPort;
 	
+	//
 	private PlayOnlineDialog create_dlg;
 	private PlayOnlineDialog join_dlg;
 	private boolean mouse_state = true;
@@ -158,9 +164,13 @@ public class MenuFrame extends JFrame implements MouseListener {
 	        
 	        if(choice == 0){
 	        	button1=new JButton("Create");
+	        	this_is_Server =true;
+	        	this_is_Client=false;
 	 	        button2=new JButton("Cancel");
 	        } else{
 	        	 button1=new JButton("Join");
+	        	 this_is_Server =false;
+		        	this_is_Client=true;
 	 	        button2=new JButton("Cancel");
 	        }
 	       
@@ -186,6 +196,54 @@ public class MenuFrame extends JFrame implements MouseListener {
 	        button1.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
 	            	mouse_state = true;
+	            	//chúng ta phải truyền dữ liệu để cho bên MainGameBoard biết bạn đã nhấn nút create room
+	            	//kiem tra du lieu hop le truoc o day truoc
+	            	if(this_is_Server)
+	            	{
+	            		myIp_Address= ip_text.getText();
+	            		myPort=port_text.getText();
+	            		System.out.println("Server: "+myIp_Address + "  " + myPort);
+	            		MainGameBoardPane mainGameBoardPaneServer = new MainGameBoardPane();
+	            		mainGameBoardPaneServer.setMyIp_Address(myIp_Address);
+	            		mainGameBoardPaneServer.setMyPort(myPort);
+	            		mainGameBoardPaneServer.setThis_is_Server(true);
+	            		mainGameBoardPaneServer.setThis_is_Client(false);
+	            		mainGameBoardPaneServer.start_As_Server();
+	            		//set ip and port
+	            		menu_pane.removeAll();
+	        			menu_pane.add(mainGameBoardPaneServer,BorderLayout.CENTER);
+	        			menu_pane.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+	        			pack();
+	        			//Dimension size = getSize();
+	        			//setSize(size);
+	        			repaint();
+	            	}
+	            	else if(this_is_Client)
+	            	{
+	            		myIp_Address= ip_text.getText();
+	            		myPort=port_text.getText();
+	            		System.out.println("Client: "+myIp_Address + "  " + myPort);
+	            		MainGameBoardPane mainGameBoardPaneClient = new MainGameBoardPane();
+	            		mainGameBoardPaneClient.setMyIp_Address(myIp_Address);
+	            		mainGameBoardPaneClient.setMyPort(myPort);
+	            		mainGameBoardPaneClient.setThis_is_Server(false);
+	            		mainGameBoardPaneClient.setThis_is_Client(true);
+	            		mainGameBoardPaneClient.start_As_Client();
+	            		//set ip and port
+	            		menu_pane.removeAll();
+	        			menu_pane.add(mainGameBoardPaneClient,BorderLayout.CENTER);
+	        			menu_pane.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+	        			pack();
+	        			//Dimension size = getSize();
+	        			//setSize(size);
+	        			repaint();
+	            	}
+	            	else
+	            	{
+	            		System.out.println("ERROR: làm cách nào đó bạn đã vào game mà không nhấn vào PLayOnline ->...");
+	            		
+	            	}
+	            	
 	                dispose();
 	            }
 	        });

@@ -10,7 +10,14 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -30,7 +37,96 @@ public class MainGameBoardPane extends JPanel{
 	private boolean local=true;//check xem chế độ chơi là local 2 người chơi ko
 	private boolean game_Started=true;//check xem game đã bắt đầu chưa
 	private String Box; //đóng gói dữ liệu để gửi đi
-	private PrintWriter out;
+	private PrintWriter out; //ghi dữ liệu
+	private boolean this_is_Server; //đây là server
+	private boolean this_is_Client; //đây là client
+	//Set up ip và port there
+	private String myIp_Address;
+	private String myPort;
+	//init socket
+	private ServerSocket serverSocket;
+	private Socket Sock; //init Sock giao tiếp giữa 2 cổng
+	private BufferedReader in; // đọc dữ liệu
+	//private Recv_Thread rec_from;
+	private TranferData_Thread tranfer_Data_Thread;
+	public void start_As_Server()
+	{
+		tranfer_Data_Thread= new TranferData_Thread();
+		setGame_Started(false);
+		
+		initialization_Again_Parameter();
+		int port = Integer.parseInt(myPort);
+		//handle button Create room
+		try {
+			InetAddress thisIp=InetAddress.getByName(myIp_Address);
+			serverSocket= new ServerSocket(port,1,thisIp);
+			
+			Thread Server_Thread = new Thread(new Runnable() {
+				public synchronized void run() {
+					try {
+						System.out.println("truoc khi cho");
+						Sock= serverSocket.accept();
+						System.out.println("sau  khi cho");
+						in= new BufferedReader(new InputStreamReader(Sock.getInputStream()));
+						out =new PrintWriter(Sock.getOutputStream());
+						tranfer_Data_Thread.start();
+						game_Started=true;
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						System.out.println("ERROR : Server_Thread");
+					}
+					
+				}
+			});
+			Server_Thread.start();
+			//waiting khuc nay
+			JOptionPane.showMessageDialog(getParent(), "Waiting");
+		} catch (NumberFormatException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("ERROR : serverSocket");
+		}
+		setLocal(false);
+		repaint();
+		
+	}
+	public void start_As_Client()
+	{
+		tranfer_Data_Thread= new TranferData_Thread();
+		setGame_Started(false);
+		
+		initialization_Again_Parameter();
+		int port = Integer.parseInt(myPort);
+		setLocal(false);
+		//handle button Create room
+		try {
+			Sock = new Socket(myIp_Address,port);
+			in = new BufferedReader(new InputStreamReader(Sock.getInputStream()));
+			out = new PrintWriter(Sock.getOutputStream());
+			tranfer_Data_Thread.start();
+			game_Started=true;
+			
+		} catch (NumberFormatException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("ERROR : serverSocket");
+		}
+		
+		repaint();
+	}
+	private void initialization_Again_Parameter() {
+		// TODO Auto-generated method stub
+		P1= new Player1();
+		P2=new Player2();
+		move=0;
+		players_turn=1;
+		GameOver=false;
+		local=true;
+		
+		repaint();
+		
+	}
 	public MainGameBoardPane()
 	{
 //		setSize(new Dimension(600, 600));
@@ -160,7 +256,7 @@ public class MainGameBoardPane extends JPanel{
 					int y=oldP.y;
 					Point presentP= P1.returnPosition(P1.GetInHand());
 					/////////////////______________________________________
-					if(isLocal())
+					if(isLocal() || isThis_is_Server())
 					{
 						//con dung de check dang la server 
 						if(P1.GetInHand() <33 && P1.GetInHand() >24)
@@ -304,10 +400,11 @@ public class MainGameBoardPane extends JPanel{
 						}
 						P1.SetInHand(-1);
 						repaint();
-						if(can_send )
+						if(can_send && ((isThis_is_Server() || isThis_is_Client())) )
 						{
 							// chỗ này để thực hiện việc send đi dữ liệu 
 							//chạy hàm Send_move(); để send dữ liệu
+							Send_move();
 							
 						}
 						if(isGameOver())
@@ -322,7 +419,7 @@ public class MainGameBoardPane extends JPanel{
 				
 				else if(P2.GetInHand()!=-1)
 				{
-					if(isLocal())
+					if(isLocal() || isThis_is_Client())
 					{
 						// chỗ này để check có phải là đánh local hoặc đánh online hình thức client
 						newP= P2.getPixelPoint(P2.GetInHand());
@@ -494,10 +591,11 @@ public class MainGameBoardPane extends JPanel{
 						}
 						P2.SetInHand(-1);
 						repaint();
-						if(can_send)
+						if(can_send && ((isThis_is_Server() || isThis_is_Client())))
 						{
 							//thực hiện send dữ liệu
 							//Send_move();
+							Send_move();
 						}
 						if(isGameOver())
 						{
@@ -534,7 +632,7 @@ public class MainGameBoardPane extends JPanel{
 	public boolean Board_getPosition(int x,int y){
 		if(!isGameOver() && isGame_Started())
 		{
-			if(players_turn==1||isLocal()||players_turn==2)
+			if((isThis_is_Server() &&players_turn==1)||(isLocal())||(isThis_is_Client() && players_turn==2))
 			{
 				int newX= x/Divide;
 				int newY= y/Divide;
@@ -641,14 +739,14 @@ public class MainGameBoardPane extends JPanel{
 	//điều khiển loại game nào ví dụ khi nào là lượt player 1 đi, khi nào đến player 2, khi nào 
 	public boolean controll_Game_Type(int x,int y)
 	{
-		if(isGame_Started())
+		if((isThis_is_Server()==true || isThis_is_Client()==true) && isGame_Started())
 		{
-			if(players_turn==1)
+			if(isThis_is_Server()&& players_turn==1)
 			{
 				return Board_getPosition(x, y);
-			} else if(players_turn==2)
+			} else if(isThis_is_Client()&&players_turn==2)
 			{
-				return  Board_getPosition(x, y);
+				return Board_getPosition(x, y);
 			}
 			else 
 				return false;
@@ -694,5 +792,125 @@ public class MainGameBoardPane extends JPanel{
 	
 	{
 		this.setGameOver(true);
+	}
+	class TranferData_Thread extends Thread{
+		public synchronized void run()
+		{
+			while(true)
+			{
+				// lắng nghe
+				try
+				{
+					Box=in.readLine(); // đọc dữ liệu
+					
+				}catch(IOException ex)
+				{
+					ex.printStackTrace();
+					System.out.println("ERROR when i handle Thread method");
+				}
+				if(Box!=null)
+				{
+					int newInHand=Integer.parseInt(Box);
+					int newX= Integer.parseInt(Box);
+					int newY=Integer.parseInt(Box);
+					newInHand /= 100;
+					newX -= (newInHand * 100);
+					newX /= 10;
+					newY -= (newInHand * 100) + (newX * 10);
+					if(players_turn==1)
+					{
+						P1.SetInHand(newInHand);
+						players_turn =2;
+						P1.changePosition(new Point(newX,newY), newInHand); //set vi tri cho quan co
+						P2.killedPiece(P1.getPiece_Enemy_Already_There(new Point(newX,newY), P2));
+						P2.checkKing(false);
+						if(P2.see_EnemyKingIsChecked(P1))
+						{
+							//nếu P1 di chuyển mà làm cho King của P1 bị check thì 
+							//không được di chuyển
+							P2.checkKing(true); // mean P2 chiếu Vua P1
+							if(P2.checkEmenyGameOver(P1))
+							{
+								//mean : 
+								System.out.println("Game over P1 win!!!");
+								GameOver();
+							}
+							else
+							{
+								CheckStatusByInternet();
+							}
+						}
+						else
+						{
+							ChangeTurnByInternet();
+						}
+						P1.SetInHand(-1);//ket thuc luot P1
+						
+					}
+					else
+					{
+						//mean: den luot P2
+						P2.SetInHand(newInHand);
+						Point newP= new Point(newX,newY);
+						P2.changePosition(newP, newInHand);
+						P1.killedPiece(P2.getPiece_Enemy_Already_There(newP, P1));
+						players_turn=1;
+						P1.checkKing(false);
+						if(P1.see_EnemyKingIsChecked(P2))
+						{
+							//mean: if 
+							P1.checkKing(true);
+							if(P1.checkEmenyGameOver(P2))
+							{
+								System.out.println("Game Over P2 win !!!");
+								GameOver();
+							}
+							else
+							{
+								CheckStatusByInternet();
+							}
+						}
+						else
+						{
+							ChangeTurnByInternet();
+						}
+						P2.SetInHand(-1);
+					}
+					repaint();
+				}
+			}
+		}
+	}
+	public void CheckStatusByInternet() {
+		// TODO Auto-generated method stub
+		
+	}
+	public void ChangeTurnByInternet() {
+		// TODO Auto-generated method stub
+		
+	}
+	public String getMyIp_Address() {
+		return myIp_Address;
+	}
+	public void setMyIp_Address(String myIp_Address) {
+		this.myIp_Address = myIp_Address;
+	}
+	public String getMyPort() {
+		return myPort;
+	}
+	public void setMyPort(String myPort) {
+		this.myPort = myPort;
+	}
+	public boolean isThis_is_Server() {
+		return this_is_Server;
+	}
+	public void setThis_is_Server(boolean this_is_Server) {
+		this.this_is_Server = this_is_Server;
+	}
+	public boolean isThis_is_Client() {
+		return this_is_Client;
+	}
+	public void setThis_is_Client(boolean this_is_Client) {
+		this.this_is_Client = this_is_Client;
 	}
 }

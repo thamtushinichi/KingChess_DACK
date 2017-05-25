@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
+encoding//src/ChessFrame/MenuFrame.java=UTF-8
 encoding//src/ChessPane/MainGameBoardPane.java=UTF-8
 encoding//src/Pieces/Bishop.java=UTF-8
 encoding//src/Pieces/King.java=UTF-8
