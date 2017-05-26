@@ -30,14 +30,10 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-<<<<<<< HEAD
+
 import ChessFrame.MenuFrame;
 import main.MainFrame;
-=======
-import Pieces.Bishop;
-import Pieces.Knight;
-import Pieces.Rook;
->>>>>>> 9f8f9b75a7caf771e9ed7ea4af9947d1524b8bf1
+
 import players.Player1;
 import players.Player2;
 
@@ -84,13 +80,10 @@ public class MainGameBoardPane extends JPanel{
 				public synchronized void run() {
 					try {
 						System.out.println("truoc khi cho");
-<<<<<<< HEAD
+
 						Sock= serverSocket.accept();
 						dialog.setVisible(false);
-=======
-						Sock= serverSocket.accept();///cho bi dung
-					
->>>>>>> 9f8f9b75a7caf771e9ed7ea4af9947d1524b8bf1
+
 						System.out.println("sau  khi cho");
 						in= new BufferedReader(new InputStreamReader(Sock.getInputStream()));
 						out =new PrintWriter(Sock.getOutputStream());
@@ -105,7 +98,7 @@ public class MainGameBoardPane extends JPanel{
 				}
 			});
 			Server_Thread.start();
-<<<<<<< HEAD
+
 			 dialog = new JDialog(SwingUtilities.windowForComponent(this));
 			 dialog.setModal(true);
 		      dialog.setLocation(new Point(520,280));
@@ -124,11 +117,10 @@ public class MainGameBoardPane extends JPanel{
 		      dialog.pack();
 		      dialog.setVisible(true);
 			
-=======
+
 			//kết thúc việc start server và server lúc này đang chờ kết nối
-			//waiting khuc nay
-			JOptionPane.showMessageDialog(getParent(), "Waiting");
->>>>>>> 9f8f9b75a7caf771e9ed7ea4af9947d1524b8bf1
+			
+
 		} catch (NumberFormatException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
