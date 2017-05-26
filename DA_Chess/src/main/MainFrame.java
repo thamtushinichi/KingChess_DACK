@@ -22,6 +22,7 @@ public class MainFrame extends JFrame {
 //		frame.setLocationRelativeTo(null);
 //		frame.setVisible(true);
 		JFrame frame = new MenuFrame();
+		//JFrame frame = new WaitingFrame();
         // mcg.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

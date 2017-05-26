@@ -1,5 +1,6 @@
 package ChessPane;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -19,9 +20,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 
+import ChessFrame.MenuFrame;
+import main.MainFrame;
 import players.Player1;
 import players.Player2;
 
@@ -49,6 +58,9 @@ public class MainGameBoardPane extends JPanel{
 	private BufferedReader in; // đọc dữ liệu
 	//private Recv_Thread rec_from;
 	private TranferData_Thread tranfer_Data_Thread;
+	
+	JDialog dialog;
+	
 	public void start_As_Server()
 	{
 		tranfer_Data_Thread= new TranferData_Thread();
@@ -66,6 +78,7 @@ public class MainGameBoardPane extends JPanel{
 					try {
 						System.out.println("truoc khi cho");
 						Sock= serverSocket.accept();
+						dialog.setVisible(false);
 						System.out.println("sau  khi cho");
 						in= new BufferedReader(new InputStreamReader(Sock.getInputStream()));
 						out =new PrintWriter(Sock.getOutputStream());
@@ -80,8 +93,24 @@ public class MainGameBoardPane extends JPanel{
 				}
 			});
 			Server_Thread.start();
-			//waiting khuc nay
-			JOptionPane.showMessageDialog(getParent(), "Waiting");
+			 dialog = new JDialog(SwingUtilities.windowForComponent(this));
+			 dialog.setModal(true);
+		      dialog.setLocation(new Point(520,280));
+		      dialog.setPreferredSize(new Dimension(330,180));
+		      
+		      ImageIcon loading = new ImageIcon(getClass().getClassLoader().getResource("resources/images/ajax-loader.gif"));
+		      JPanel panel = new JPanel(new BorderLayout());
+		      panel.add(new JLabel("Waiting for other player... ", loading, JLabel.CENTER));
+		      //panel.add(new JLabel("Please wait......."), BorderLayout.PAGE_START);
+		      dialog.add(panel);
+		      
+		      //dialog.setLocationRelativeTo(getParent());
+		      dialog.setResizable(false);
+		      dialog.setUndecorated(true);
+		      //dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		      dialog.pack();
+		      dialog.setVisible(true);
+			
 		} catch (NumberFormatException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

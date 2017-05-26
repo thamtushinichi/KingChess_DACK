@@ -17,6 +17,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
@@ -51,6 +57,7 @@ public class MenuFrame extends JFrame implements MouseListener {
 	private boolean this_is_Client;
 	private String myIp_Address;
 	private String myPort;
+	private String currentHostIpAddress = null;
 	
 	//
 	private PlayOnlineDialog create_dlg;
@@ -200,9 +207,11 @@ public class MenuFrame extends JFrame implements MouseListener {
 	            	//kiem tra du lieu hop le truoc o day truoc
 	            	if(this_is_Server)
 	            	{
+	            		create_dlg.setVisible(false);
 	            		myIp_Address= ip_text.getText();
 	            		myPort=port_text.getText();
 	            		System.out.println("Server: "+myIp_Address + "  " + myPort);
+	            		
 	            		MainGameBoardPane mainGameBoardPaneServer = new MainGameBoardPane();
 	            		mainGameBoardPaneServer.setMyIp_Address(myIp_Address);
 	            		mainGameBoardPaneServer.setMyPort(myPort);
@@ -266,10 +275,39 @@ public class MenuFrame extends JFrame implements MouseListener {
 	        
 	        cp.add(panel);
 	        
+	        
+	        
 	        if(choice == 0){
-	        	ip_text.setText("127.0.0.1");
+	        	ip_text.setText(GetHostIpAddress());
+	        	ip_text.setEnabled(false);
 		        port_text.setText("5000");
 	        }
+	    }
+	    
+	    private String GetHostIpAddress(){
+	    	Enumeration<NetworkInterface> netInterfaces = null;
+            try {
+                netInterfaces = NetworkInterface.getNetworkInterfaces();
+
+                while (netInterfaces.hasMoreElements()) {
+                    NetworkInterface ni = netInterfaces.nextElement();
+                    Enumeration<InetAddress> address = ni.getInetAddresses();
+                    while (address.hasMoreElements()) {
+                        InetAddress addr = address.nextElement();
+                        if (!addr.isLoopbackAddress() && addr.isSiteLocalAddress()
+                                && !(addr.getHostAddress().indexOf(":") > -1)) {
+                            currentHostIpAddress = addr.getHostAddress();
+                        }
+                    }
+                }
+                if (currentHostIpAddress == null) {
+                    currentHostIpAddress = "127.0.0.1";
+                }
+
+            } catch (SocketException ex) {
+                currentHostIpAddress = "127.0.0.1";
+            }
+            return currentHostIpAddress;
 	    }
 
 	    public String GetIpAddress() {
