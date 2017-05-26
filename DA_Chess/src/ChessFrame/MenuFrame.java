@@ -56,7 +56,7 @@ public class MenuFrame extends JFrame implements MouseListener {
 	private PlayOnlineDialog create_dlg;
 	private PlayOnlineDialog join_dlg;
 	private boolean mouse_state = true;
-	 private final MainGameBoardPane mainGameBoardPane=new MainGameBoardPane();
+	 private final MainGameBoardPane mainGameBoardPane=new MainGameBoardPane();//cho local
 	public MenuFrame() {
 		menu_pane = new MenuPane();
 		setContentPane(menu_pane);
@@ -192,7 +192,7 @@ public class MenuFrame extends JFrame implements MouseListener {
 	        
 	        port_text.setSize(150,24);
 	        port_text.setLocation(130,50);
-	        
+	        //khi nhấn nút Create trong dialog Create Room thì chạy hàm này
 	        button1.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
 	            	mouse_state = true;

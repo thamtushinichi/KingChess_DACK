@@ -17,11 +17,15 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import Pieces.Bishop;
+import Pieces.Knight;
+import Pieces.Rook;
 import players.Player1;
 import players.Player2;
 
@@ -65,7 +69,8 @@ public class MainGameBoardPane extends JPanel{
 				public synchronized void run() {
 					try {
 						System.out.println("truoc khi cho");
-						Sock= serverSocket.accept();
+						Sock= serverSocket.accept();///cho bi dung
+					
 						System.out.println("sau  khi cho");
 						in= new BufferedReader(new InputStreamReader(Sock.getInputStream()));
 						out =new PrintWriter(Sock.getOutputStream());
@@ -80,6 +85,7 @@ public class MainGameBoardPane extends JPanel{
 				}
 			});
 			Server_Thread.start();
+			//kết thúc việc start server và server lúc này đang chờ kết nối
 			//waiting khuc nay
 			JOptionPane.showMessageDialog(getParent(), "Waiting");
 		} catch (NumberFormatException | IOException e) {
@@ -245,6 +251,8 @@ public class MainGameBoardPane extends JPanel{
 				Point samePosition;
 				if(P1.GetInHand()!=-1)
 				{
+					
+					
 					newP= P1.getPixelPoint(P1.GetInHand());
 					newP.x= newP.x/Divide;
 					newP.y=newP.y/Divide;
@@ -388,6 +396,22 @@ public class MainGameBoardPane extends JPanel{
 													can_send=true;
 												}
 											}
+											else
+											{
+												end_move=false;
+												if(P2.checkEmenyGameOver(P1))
+												{
+													Box = Integer.toString(P2.GetInHand()) + Integer.toString(newP.x) + Integer.toString(newP.y);
+													GameOver();
+													can_send = true;
+												}
+												else
+												{
+													Box = Integer.toString(P1.GetInHand()) + Integer.toString(newP.x) + Integer.toString(newP.y);
+													CheckStatus();
+													can_send=true;
+												}
+											}
 											if(end_move)
 											{
 												Box=Integer.toString(P1.GetInHand()) +Integer.toString(newP.x)+Integer.toString(newP.y);
@@ -409,9 +433,10 @@ public class MainGameBoardPane extends JPanel{
 						}
 						if(isGameOver())
 						{
+							System.out.println("game over 1");
 							JOptionPane.showConfirmDialog(getParent(), "Check Mate\n White won the game", "Game Over",
 									JOptionPane.DEFAULT_OPTION);
-							System.out.println("game over 1");
+							
 						}
 					}
 				}
@@ -419,6 +444,7 @@ public class MainGameBoardPane extends JPanel{
 				
 				else if(P2.GetInHand()!=-1)
 				{
+					
 					if(isLocal() || isThis_is_Client())
 					{
 						// chỗ này để check có phải là đánh local hoặc đánh online hình thức client
@@ -559,15 +585,16 @@ public class MainGameBoardPane extends JPanel{
 									}
 									if(!P2.returncheckKing())
 									{
+										//mean: di chuyen mà King2 không bi chiếu
 										if(P1.see_EnemyKingIsChecked(P2))
 										{
-											// nếu king bị check thì không được di chuyển
+											// nếu king 1 bị check thì không được di chuyển
 											//và quân cờ phải bị trở về vị trí cũ
 											P1.checkKing(true);
 											end_move=false;
 											if(P1.checkEmenyGameOver(P2))
 											{
-												Box = Integer.toString(P2.GetInHand()) + Integer.toString(newP.x) + Integer.toString(newP.y);
+												Box = Integer.toString(P1.GetInHand()) + Integer.toString(newP.x) + Integer.toString(newP.y);
 												GameOver();
 												can_send = true;
 											}
@@ -578,6 +605,23 @@ public class MainGameBoardPane extends JPanel{
 												can_send=true;
 											}
 										}
+										else
+										{
+											end_move=false;
+											if(P1.checkEmenyGameOver(P2))
+											{
+												Box = Integer.toString(P1.GetInHand()) + Integer.toString(newP.x) + Integer.toString(newP.y);
+												GameOver();
+												can_send = true;
+											}
+											else
+											{
+												Box = Integer.toString(P2.GetInHand()) + Integer.toString(newP.x) + Integer.toString(newP.y);
+												CheckStatus();
+												can_send=true;
+											}
+										}
+											
 										if(end_move)
 										{
 											Box = Integer.toString(P2.GetInHand()) + Integer.toString(newP.x) + Integer.toString(newP.y);
@@ -599,9 +643,10 @@ public class MainGameBoardPane extends JPanel{
 						}
 						if(isGameOver())
 						{
-							JOptionPane.showConfirmDialog(null, "Check Mate\n Black won the game", "Game Over",
-									JOptionPane.DEFAULT_OPTION);
 							System.out.println("game over 2");
+							JOptionPane.showConfirmDialog(getParent(), "Check Mate\n Black won the game", "Game Over",
+									JOptionPane.DEFAULT_OPTION);
+							
 						}
 					}
 				}
@@ -611,6 +656,149 @@ public class MainGameBoardPane extends JPanel{
 	}
 	public boolean isGame_Started() {
 		return game_Started;
+	}
+	/*
+	 *  return true when tất cả quân của Player 2 trên bàn cờ không thể di chuyển đến vị trí nào đó được nữa
+	 *  
+	 */
+	public boolean CheckGameOver_When_Pieces_Can_Not_Move(Player2 P2) {
+		//////////////////////
+//		List<Integer> pieces= new ArrayList<>();
+//		for(int x=1;x<=8;x++)
+//		{
+//			for(int y=1;y<=8;y++)
+//			{
+//				if(P2.getMyPieceAtPosition(new Point(x,y))!=-1)
+//				{
+//					pieces.add(P2.getMyPieceAtPosition(new Point(x,y)));
+//				}
+//			}
+//		}
+//		
+//		for(int i=0;i<pieces.size();i++)
+//		{
+//			int value=pieces.get(i).intValue();
+//			
+//			switch (value)
+//			{
+//			case 1:
+//				
+//				if(!P2.RookGenerate_Moves(P1, P2.br1))
+//				{
+//					System.out.println("this is Rook");
+//				}
+//				break;
+//			case 2:
+//				
+//				if(!P2.RookGenerate_Moves(P1, P2.br2))
+//					
+//				{
+//					System.out.println("this is Rook");
+//				}
+//				break;
+//			case 3:
+//				
+//				if(!P2.KnightGenerate_Moves(P1, P2.bn1))
+//				{
+//					System.out.println("this is Knight");
+//				}
+//				break;
+//			case 4:
+//				
+//				if(!P2.KnightGenerate_Moves(P1, P2.bn2))
+//				{
+//					System.out.println("this is Knight");
+//				}
+//				break;
+//			case 5:
+//				
+//				if(!P2.BishopGenerate_Moves(P1, P2.bb1))
+//				{
+//					System.out.println("this is Bishop");
+//				}
+//				break;
+//			case 6:
+//				
+//				if(!P2.BishopGenerate_Moves(P1, P2.bb2))
+//				{
+//					System.out.println("this is Bishop");
+//				}
+//				break;
+//			case 7:
+//				
+//				if(!P2.QueenGenerate_Moves(P1))
+//				{
+//					System.out.println("this is Queen");
+//				}
+//				break;
+//			case 8: 
+//				
+//				if(!P2.KingGenerate_Moves(P1))
+//					
+//				{
+//					System.out.println("this is King");
+//				}
+//				break;
+//			case 9:
+//				
+//				if(!P2.PawnGenerate_Moves(P1, P2.bPawns[0]))
+//				{
+//					System.out.println("this is Pawn");
+//				}
+//				break;
+//			case 10:
+//				
+//				if(!P2.PawnGenerate_Moves(P1, P2.bPawns[1]))
+//				{
+//					System.out.println("this is Pawn");
+//				}
+//				break;
+//			case 11:
+//				
+//				if(!P2.PawnGenerate_Moves(P1, P2.bPawns[2]))
+//				{
+//					System.out.println("this is Pawn");
+//				}
+//				break;
+//			case 12:
+//				
+//				if(!P2.PawnGenerate_Moves(P1, P2.bPawns[3]))
+//				{
+//					System.out.println("this is Pawn");
+//				}
+//				break;
+//			case 13:
+//				
+//				if(!P2.PawnGenerate_Moves(P1, P2.bPawns[4]))
+//				{
+//					System.out.println("this is Pawn");
+//				}
+//				break;
+//			case 14:
+//				
+//				if(!P2.PawnGenerate_Moves(P1, P2.bPawns[5]))
+//				{
+//					System.out.println("this is Pawn");
+//				}
+//				break;
+//			case 15:
+//				
+//				if(!P2.PawnGenerate_Moves(P1, P2.bPawns[6]))
+//					
+//				{
+//					System.out.println("this is Pawn");
+//				}
+//				break;
+//			case 16:
+//			
+//				if(!P2.PawnGenerate_Moves(P1, P2.bPawns[7]))
+//				{
+//					System.out.println("this is Pawn");
+//				}
+//				break;
+//			}
+//		}
+		return false;
 	}
 	public void setGame_Started(boolean game_Started) {
 		this.game_Started = game_Started;
@@ -761,10 +949,12 @@ public class MainGameBoardPane extends JPanel{
 		if(players_turn==1)
 		{
 			players_turn=2;
+			
 		}
 		else if(players_turn==2)
 		{
 			players_turn=1;
+			
 		}
 	}
 	private void CheckStatus() {
@@ -802,6 +992,7 @@ public class MainGameBoardPane extends JPanel{
 				try
 				{
 					Box=in.readLine(); // đọc dữ liệu
+				
 					
 				}catch(IOException ex)
 				{
