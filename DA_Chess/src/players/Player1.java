@@ -470,6 +470,7 @@ public class Player1 {
     		inHand=-1;
     		return false;
     	} 
+    	
     	for(int i=0;i<=7;i++)
     	{
     		inHand=25+i;
@@ -824,9 +825,9 @@ public class Player1 {
 		oldP1.x=x1;
 		oldP1.y=y1;
 		placeCheck.y=y1;
-		if(x1!=20)
+		if(x1!=13)
 		{
-			//nếu như quân này chưa chết ( tọa độ x=20 là quân này đã chết)
+			//nếu như quân này chưa chết ( tọa độ x=13 là quân này đã chết)
 			//chạy hàng ngang
 			for(int i=1;i<=8;i++)
 			{
@@ -931,7 +932,7 @@ public class Player1 {
 	        {
 	        	inHand=22;
 	        }
-	        if(oldP1.x!=20)
+	        if(oldP1.x!=13)
 	        {
 	        	//quân Tượng chạy đường chéo hướng dưới trái
 	        	for(int x=oldP1.x,y=oldP1.y;x>=1&&y<=8;x--,y++)
@@ -1031,7 +1032,7 @@ public class Player1 {
 		int x=oldP1.x;
 		int y= oldP1.y;
 		//neu nhu quan Ngua nay chua chet
-		if(x!=20)
+		if(x!=13)
 		{
 			if(x+1<=8 && y+2 <=8)
 			{
@@ -1271,7 +1272,7 @@ public class Player1 {
 		oldP1=this.wq.returnPosition();
 		Point placeCheck= new Point();
 		inHand=23;
-		if(oldP1.x!=20)
+		if(oldP1.x!=13)
 		{
 			//quân Hậu đi đường chéo trái dưới
 			 for(int x= oldP1.x,y= oldP1.y;x>=1 && y<=8;x--,y++) {
@@ -1416,7 +1417,7 @@ public class Player1 {
 		placeCheck.x=oldP1.x;
 		placeCheck.y=oldP1.y;
 		//nếu quân tốt chưa chết
-		if(oldP1.x!=20)
+		if(oldP1.x!=13)
 		{
 			if(wPawn.canMove(oldP1.x, oldP1.y-2, this.Color) && oldP1.y-2>=1)
 			{

@@ -561,6 +561,18 @@ public class Player2 {
 	        }
 	        return true;
 		}
+		public int getMyPieceAtPosition(Point newP)
+		{
+			Point samePostion;
+			for(int i=1;i<=16;i++)
+			{
+				 samePostion=this.returnPosition(i);
+				 if(newP.x==samePostion.x&&newP.y==samePostion.y) {
+		                return i;
+		            }
+			}
+			return -1;
+		}
 		// lay quan co enemy ở đấy, trả về giá trị int của quân cờ
 		public int getPiece_Enemy_Already_There(Point newP,Player1 enemy)
 		{
