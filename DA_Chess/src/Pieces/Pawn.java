@@ -18,6 +18,8 @@ public class Pawn {
 	//khởi tạo quân cờ bằng tên đường dẫn , điểm x,y
 	private boolean movedBefore;
 	private boolean mySeen;
+	private boolean pawn_becomes_Queen=false; // xác định quân tốt tiến hóa thành quân Hậu
+	private boolean move_sucess_one_times=false;
 	public Pawn(String pathName_Icon,int startX,int startY)
 	{
 		point = new Point();
@@ -82,14 +84,20 @@ public class Pawn {
 	}
 	public void setPoint(Point point) {
 		//gan 1 diem moi vao thi luu lai diem cu roi moi gan diem moi vao
+		
 		this.pointOld.x=this.point.x;
 		this.pointOld.y=this.point.y;
 		this.x=point.x;
 		this.y=point.y;
 		this.point.x=point.x;
 		this.point.y=point.y;
+		
 		movedBefore=true;
         mySeen=false;
+        if(move_sucess_one_times==false)
+		{
+        	movedBefore=false;
+		}
 	}
 	public Point getPointOld() {
 		return pointOld;
@@ -106,6 +114,13 @@ public class Pawn {
 		//Trả về điểm vị trí của quân cờ
 		return (Point) point.clone();
 	}
+	
+	public boolean isPawn_becomes_Queen() {
+		return pawn_becomes_Queen;
+	}
+	public void setPawn_becomes_Queen(boolean pawn_becomes_Queen) {
+		this.pawn_becomes_Queen = pawn_becomes_Queen;
+	}
 	public boolean inThisPosition(int xPresent,int yPresent){
 		if(point.x==xPresent && point.y==yPresent)
 		{
@@ -115,12 +130,15 @@ public class Pawn {
 	}
 	public boolean canMove(int x,int y, String typeColor)
 	{
-		if((typeColor.equals("black"))) {
+		if(!pawn_becomes_Queen)
+		{
+			
+			if((typeColor.equals("black"))) {
             if((((y-1==this.y)&&(x==(this.x)))) /*&&!Check_Solider_Sees(x,y)*/) {
                 
                 return true;
                 
-            } else if((((y-2==this.y)&&(x==(this.x))))&&!movedBefore ) {
+            } else if((((y-2==this.y)&&(x==(this.x))))&&!movedBefore&& !move_sucess_one_times ) {
                 
                 return true;
             } else if((y-1==this.y&&x+1==(this.x)||(y-1==this.y&&x-1==(this.x)))&&mySeen ) {
@@ -132,7 +150,7 @@ public class Pawn {
         else if (typeColor=="white") {
             if(((y+1==this.y)&&(x==(this.x))) /*&&!Check_Solider_Sees(x,y)*/) {
                 return true;
-            } else if((((y+2==this.y)&&(x==(this.x)))) &&!movedBefore) {
+            } else if((((y+2==this.y)&&(x==(this.x)))) &&!movedBefore && !move_sucess_one_times) {
                 return true;
             } else if((y+1==this.y&&x+1==(this.x)||(y+1==this.y&&x-1==(this.x)))&& mySeen  ) {
                 return true;
@@ -141,10 +159,29 @@ public class Pawn {
                 return false;
         }
         return false;
+		}
+		else
+		{
+			//nếu như là quân tốt đã tiến hóa thành quân Hậu
+			
+			if (((y == this.y) && (x > (this.x) || (x < this.x)))) {
+				return true;
+			} else if ((((y > this.y) || (y < this.y)) && (x == (this.x)))) {
+				return true;
+			} else if ((x - y) == (this.x - this.y)) {
+				return true;
+			} else if ((x + y) == (this.x + this.y)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
 	}
 	public boolean isPieceInMyWay(int x,int y,Point othersPosition,String typeColor)
 	{
-		 if(this.y-y==2||this.y-y==-2) {
+		if(!pawn_becomes_Queen)
+		 {
+			if(this.y-y==2||this.y-y==-2) {
 	            if((typeColor.equals("black"))) {
 	                
 	                if((((y-1==othersPosition.y)&&(x==(othersPosition.x))))&&!movedBefore ) {
@@ -163,6 +200,104 @@ public class Pawn {
 	            }
 	        }
 	        return false;
+		 }
+		else
+		{
+			//khi là quân Hậu
+			int j = y;
+			int i = x;
+			if (((y == this.y) && (x > (this.x) || (x < (this.x))))) {
+				if ((this.x < i))
+					while ((i != this.x + 1)) {
+						i--;
+						if (((othersPosition.y) == j) && ((othersPosition.x == i)))// there
+																					// Same
+																					// Color
+																					// piece
+						{
+							return true;
+						}
+					}
+
+				else if ((this.x > i)) {
+					while ((i != this.x - 1)) {
+						i++;
+						if (((othersPosition.y) == j) && ((othersPosition.x == i))) {
+							return true;
+						}
+					}
+				}
+			}
+
+			else if ((((y > this.y) || (y < this.y)) && (x == (this.x)))) {
+				if ((this.y < j)) {
+					while ((j != this.y + 1)) {
+						j--;
+						if (((othersPosition.y) == j) && ((othersPosition.x == i))) {
+							return true;
+						}
+					}
+				} else if ((this.y > j)) {
+					while ((j != this.y - 1)) {
+						j++;
+
+						if (((othersPosition.y) == j) && ((othersPosition.x == i))) {
+							return true;
+						}
+					}
+
+				}
+			} else if ((x - y) == (this.x - this.y)) {
+				if (x > this.x && y > this.y) {
+					while ((j != this.y + 1) && (i != this.x + 1)) {
+						j--;
+						i--;
+						if (((othersPosition.y) == j) && ((othersPosition.x == i))) {
+							return true;
+						}
+					}
+				} else if (x < this.x && y < this.y)
+
+					while ((j != this.y - 1) && (i != this.x - 1)) {
+						j++;
+						i++;
+
+						if (((othersPosition.y) == j) && ((othersPosition.x == i))) {
+							return true;
+						}
+
+					}
+			}
+
+			else if ((x + y) == (this.x + this.y)) {
+
+				if ((this.x < i) && (this.y > j)) {
+					while ((j != this.y - 1) && (i != this.x + 1)) {
+						j++;
+						i--;
+
+						if (((othersPosition.y) == j) && ((othersPosition.x == i))) {
+							return true;
+						}
+
+					}
+
+				}
+
+				else if ((this.x > i) && (this.y < j)) {
+					while ((j != this.y + 1) && (i != this.x - 1)) {
+						j--;
+						i++;
+
+						if (((othersPosition.y) == j) && ((othersPosition.x == i))) {
+							return true;
+						}
+					}
+				}
+
+			}
+			return false;
+		}
 	}
 	public boolean isMySeen() {
 		return mySeen;
@@ -171,7 +306,8 @@ public class Pawn {
 		this.mySeen = mySeen;
 	}
 	 public boolean setSeenByCheckKing(Point newP,String Color) {
-	        mySeen=false;
+	     
+	 mySeen=false;
 	        if((Color.equals("black"))) {
 	            if((newP.y-1==this.y&&newP.x+1==(this.x)||(newP.y-1==this.y&&newP.x-1==(this.x)))) {
 	                
@@ -186,6 +322,8 @@ public class Pawn {
 	            } else return false;
 	        }
 	        return false;
+		 
+	     
 	    }
 	 public String tell_me() {
 	        return "Pawn = ("+point.x+','+point.y+")";
@@ -194,4 +332,11 @@ public class Pawn {
 		public Point generatePossible_Moves() {
 	        return new Point();
 	    }
+		public boolean isMove_sucess_one_times() {
+			return move_sucess_one_times;
+		}
+		public void setMove_sucess_one_times(boolean move_sucess_one_times) {
+			this.move_sucess_one_times = move_sucess_one_times;
+		}
+		
 }

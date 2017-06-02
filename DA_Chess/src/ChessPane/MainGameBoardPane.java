@@ -276,6 +276,7 @@ public class MainGameBoardPane extends JPanel{
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
+			
 			//khi nhả quân cờ ra thì chạy hàm này
 			boolean can_send=false; //dung de send sau khi danh 1 quan co sang cho doi phuong
 			if(!isGameOver())
@@ -319,6 +320,7 @@ public class MainGameBoardPane extends JPanel{
 						{
 							if(P1.checkMove(newP,P1.GetInHand()))
 							{
+								int aa=P1.GetInHand();
 								//check nếu như di chuyển đến ô không hợp lệ
 								boolean flag =false;
 								for(int i=1;i<=32;i++)
@@ -389,7 +391,30 @@ public class MainGameBoardPane extends JPanel{
 									}
 									if(end_move)
 									{
-										P1.changePosition(newP,P1.GetInHand()); //kết thúc sự di chuyển
+										P1.changePosition(newP,P1.GetInHand()); //kết thúc sự di chuyển P1
+										if(P2.checkEmenyGameOver(P1))
+										{
+											//neu nhu P2 game over
+											JOptionPane.showConfirmDialog(getParent(), "Check Mate\n White won the game", "Game Over",
+													JOptionPane.DEFAULT_OPTION);
+											return;
+										}
+										
+										if(P1.GetInHand()>=25 && P1.GetInHand()<=32)
+										{
+											Point pawn_position= P1.returnPosition(P1.GetInHand());
+											// check tốt đã di chuyển thành công chưa
+											if(pawn_position.y !=7)
+											{
+												P1.moved_Success(P1.GetInHand());
+											}
+											// nếu là quân tốt thì check tiếp có nằm ở vị trí được sắc phong Hậu không
+											
+											if(pawn_position.y ==1)
+											{
+												P1.honor_Queen(P1.GetInHand());
+											}
+										}
 									}
 										P1.checkKing(false);//ko check king nữa
 										if(P1.see_EnemyKingIsChecked(P2))
@@ -429,32 +454,38 @@ public class MainGameBoardPane extends JPanel{
 													can_send=true;
 												}
 											}
-											else
-											{
-												end_move=false;
-												if(P2.checkEmenyGameOver(P1))
-												{
-													Box = Integer.toString(P2.GetInHand()) + Integer.toString(newP.x) + Integer.toString(newP.y);
-													GameOver();
-													can_send = true;
-												}
-												else
-												{
-													Box = Integer.toString(P1.GetInHand()) + Integer.toString(newP.x) + Integer.toString(newP.y);
-													CheckStatus();
-													can_send=true;
-												}
-											}
+//											else
+//											{
+//												P2.checkKing(false);
+//												end_move=false;
+//												if(P2.checkEmenyGameOver(P1))
+//												{
+//													Box = Integer.toString(P2.GetInHand()) + Integer.toString(newP.x) + Integer.toString(newP.y);
+//													GameOver();
+//													can_send = true;
+//												}
+//												else
+//												{
+//													Box = Integer.toString(P1.GetInHand()) + Integer.toString(newP.x) + Integer.toString(newP.y);
+//													CheckStatus();
+//													can_send=true;
+//												}
+//											}
 											if(end_move)
 											{
+												
 												Box=Integer.toString(P1.GetInHand()) +Integer.toString(newP.x)+Integer.toString(newP.y);
 												ChangeTurn();
 												can_send=true;
+												
 											}
 										}
 								}
 							}
 						}
+						//khi kết thúc lượt thì check
+						
+							
 						P1.SetInHand(-1);
 						repaint();
 						if(can_send && ((isThis_is_Server() || isThis_is_Client())) )
@@ -597,7 +628,33 @@ public class MainGameBoardPane extends JPanel{
 									//đồng nghĩa với king2 =true;
 									if(end_move)
 									{
+										//khúc này là đã kết thúc lượt P2
 										P2.changePosition(newP, P2.GetInHand());
+										
+										if(P1.checkEmenyGameOver(P2))
+										{
+											//neu nhu P2 game over
+											JOptionPane.showConfirmDialog(getParent(), "Check Mate\n Black won the game", "Game Over",
+													JOptionPane.DEFAULT_OPTION);
+											return;
+										}
+										
+										if(P2.GetInHand()>=9 && P2.GetInHand()<=16)
+										{
+											Point pawn_position1= P2.returnPosition(P2.GetInHand());
+											// check tốt đã di chuyển thành công chưa
+											
+											if(pawn_position1.y !=2)
+											{
+												P2.moved_Success(P2.GetInHand());
+											}
+											// nếu là quân tốt thì check tiếp có nằm ở vị trí được sắc phong Hậu không
+											
+											if(pawn_position1.y ==8)
+											{
+												P2.honor_Queen(P2.GetInHand());
+											}
+										}
 									}
 									P2.checkKing(false);
 									if(P2.see_EnemyKingIsChecked(P1))
@@ -638,25 +695,28 @@ public class MainGameBoardPane extends JPanel{
 												can_send=true;
 											}
 										}
-										else
-										{
-											end_move=false;
-											if(P1.checkEmenyGameOver(P2))
-											{
-												Box = Integer.toString(P1.GetInHand()) + Integer.toString(newP.x) + Integer.toString(newP.y);
-												GameOver();
-												can_send = true;
-											}
-											else
-											{
-												Box = Integer.toString(P2.GetInHand()) + Integer.toString(newP.x) + Integer.toString(newP.y);
-												CheckStatus();
-												can_send=true;
-											}
-										}
+										//check vua game over ma ko can phai chieu
+//										else
+//										{
+//											P1.checkKing(false);
+//											end_move=false;
+//											if(P1.checkEmenyGameOver(P2))
+//											{
+//												Box = Integer.toString(P1.GetInHand()) + Integer.toString(newP.x) + Integer.toString(newP.y);
+//												GameOver();
+//												can_send = true;
+//											}
+//											else
+//											{
+//												Box = Integer.toString(P2.GetInHand()) + Integer.toString(newP.x) + Integer.toString(newP.y);
+//												CheckStatus();
+//												can_send=true;
+//											}
+//										}
 											
 										if(end_move)
 										{
+											
 											Box = Integer.toString(P2.GetInHand()) + Integer.toString(newP.x) + Integer.toString(newP.y);
 											ChangeTurn();
 											can_send = true;
@@ -690,149 +750,7 @@ public class MainGameBoardPane extends JPanel{
 	public boolean isGame_Started() {
 		return game_Started;
 	}
-	/*
-	 *  return true when tất cả quân của Player 2 trên bàn cờ không thể di chuyển đến vị trí nào đó được nữa
-	 *  
-	 */
-	public boolean CheckGameOver_When_Pieces_Can_Not_Move(Player2 P2) {
-		//////////////////////
-//		List<Integer> pieces= new ArrayList<>();
-//		for(int x=1;x<=8;x++)
-//		{
-//			for(int y=1;y<=8;y++)
-//			{
-//				if(P2.getMyPieceAtPosition(new Point(x,y))!=-1)
-//				{
-//					pieces.add(P2.getMyPieceAtPosition(new Point(x,y)));
-//				}
-//			}
-//		}
-//		
-//		for(int i=0;i<pieces.size();i++)
-//		{
-//			int value=pieces.get(i).intValue();
-//			
-//			switch (value)
-//			{
-//			case 1:
-//				
-//				if(!P2.RookGenerate_Moves(P1, P2.br1))
-//				{
-//					System.out.println("this is Rook");
-//				}
-//				break;
-//			case 2:
-//				
-//				if(!P2.RookGenerate_Moves(P1, P2.br2))
-//					
-//				{
-//					System.out.println("this is Rook");
-//				}
-//				break;
-//			case 3:
-//				
-//				if(!P2.KnightGenerate_Moves(P1, P2.bn1))
-//				{
-//					System.out.println("this is Knight");
-//				}
-//				break;
-//			case 4:
-//				
-//				if(!P2.KnightGenerate_Moves(P1, P2.bn2))
-//				{
-//					System.out.println("this is Knight");
-//				}
-//				break;
-//			case 5:
-//				
-//				if(!P2.BishopGenerate_Moves(P1, P2.bb1))
-//				{
-//					System.out.println("this is Bishop");
-//				}
-//				break;
-//			case 6:
-//				
-//				if(!P2.BishopGenerate_Moves(P1, P2.bb2))
-//				{
-//					System.out.println("this is Bishop");
-//				}
-//				break;
-//			case 7:
-//				
-//				if(!P2.QueenGenerate_Moves(P1))
-//				{
-//					System.out.println("this is Queen");
-//				}
-//				break;
-//			case 8: 
-//				
-//				if(!P2.KingGenerate_Moves(P1))
-//					
-//				{
-//					System.out.println("this is King");
-//				}
-//				break;
-//			case 9:
-//				
-//				if(!P2.PawnGenerate_Moves(P1, P2.bPawns[0]))
-//				{
-//					System.out.println("this is Pawn");
-//				}
-//				break;
-//			case 10:
-//				
-//				if(!P2.PawnGenerate_Moves(P1, P2.bPawns[1]))
-//				{
-//					System.out.println("this is Pawn");
-//				}
-//				break;
-//			case 11:
-//				
-//				if(!P2.PawnGenerate_Moves(P1, P2.bPawns[2]))
-//				{
-//					System.out.println("this is Pawn");
-//				}
-//				break;
-//			case 12:
-//				
-//				if(!P2.PawnGenerate_Moves(P1, P2.bPawns[3]))
-//				{
-//					System.out.println("this is Pawn");
-//				}
-//				break;
-//			case 13:
-//				
-//				if(!P2.PawnGenerate_Moves(P1, P2.bPawns[4]))
-//				{
-//					System.out.println("this is Pawn");
-//				}
-//				break;
-//			case 14:
-//				
-//				if(!P2.PawnGenerate_Moves(P1, P2.bPawns[5]))
-//				{
-//					System.out.println("this is Pawn");
-//				}
-//				break;
-//			case 15:
-//				
-//				if(!P2.PawnGenerate_Moves(P1, P2.bPawns[6]))
-//					
-//				{
-//					System.out.println("this is Pawn");
-//				}
-//				break;
-//			case 16:
-//			
-//				if(!P2.PawnGenerate_Moves(P1, P2.bPawns[7]))
-//				{
-//					System.out.println("this is Pawn");
-//				}
-//				break;
-//			}
-//		}
-		return false;
-	}
+	
 	public void setGame_Started(boolean game_Started) {
 		this.game_Started = game_Started;
 	}
