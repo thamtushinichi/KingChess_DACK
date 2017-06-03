@@ -113,11 +113,11 @@ public class MainGameBoardPane extends JPanel{
 
 			 dialog = new JDialog(SwingUtilities.windowForComponent(this));
 			 dialog.setModal(true);
-		      dialog.setLocation(new Point(520,280));
-		      dialog.setPreferredSize(new Dimension(400,60));
+		      dialog.setLocation(new Point(470,300));
+		      dialog.setPreferredSize(new Dimension(430,105));
 		      
 		      
-		      ImageIcon loading = new ImageIcon(getClass().getClassLoader().getResource("resources/images/waiting.gif"));
+		      ImageIcon loading = new ImageIcon(getClass().getClassLoader().getResource("resources/images/pac.gif"));
 		      JPanel panel = new JPanel(new BorderLayout());
 		      panel.setBackground(Color.black);
 		      panel.add(new JLabel(loading, JLabel.CENTER));
