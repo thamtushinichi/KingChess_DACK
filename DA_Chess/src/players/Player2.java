@@ -499,8 +499,8 @@ public class Player2 {
 					if (white.checkMove(My_King_Position, i)) {
 						flag = true;
 						for (int j = 1; j < 33; j++) {
-							if (j < 17) {
-								if (white.checkWay(My_King_Position, returnPosition(j), i)) {
+							if (j >=17 && j<=32) {
+								if (white.checkWay(My_King_Position, white.returnPosition(j), i)) {
 									// Means there is somting in the Way so can't
 									// move'
 									flag = false;
@@ -508,7 +508,7 @@ public class Player2 {
 							} else {
 
 								if (j != 8)
-									if (white.checkWay(My_King_Position, white.returnPosition(j), i)) {
+									if (white.checkWay(My_King_Position, returnPosition(j), i)) {
 
 										flag = false;
 										// Means there is somting in the Way so
@@ -1437,16 +1437,17 @@ public class Player2 {
 			//nếu quân tốt chưa chết
 			if(oldP1.x!=20)
 			{
-				if(bPawn.canMove(oldP1.x, oldP1.y-2, this.Color) && oldP1.y-2>=1)
+				if(bPawn.canMove(oldP1.x, oldP1.y+2, this.Color) && oldP1.y+2>=1)
 				{
 					//chi di chuyen hang doc ( truong hợp này là 2 ô)
-					bPawn.setY(oldP1.y-2);
-					placeCheck.y=oldP1.y-2;
+					bPawn.setY(oldP1.y+2);
+					placeCheck.y=oldP1.y+2;
 					if(piece_Already_There(placeCheck)){
 						if(piece_Enemy_Already_There(placeCheck, enemy))
 						{
 							if(!see_EnemyKingIsChecked(enemy))
 							{
+								//nếu di chuyển quân tốt đến vị trí mới này mà vua ko bị chiếu thì di chuyển
 								bPawn.setPoint(oldP1);
 								return false;
 							}
@@ -1455,17 +1456,18 @@ public class Player2 {
 					
 				}
 				//di chuyển hàng dọc 1 ô
-				if(bPawn.canMove(oldP1.x, oldP1.y-1, this.Color) && oldP1.y-1>=1)
+				if(bPawn.canMove(oldP1.x, oldP1.y+1, this.Color) && oldP1.y+1>=1)
 				{
 					//chi di chuyen hang doc ( truong hợp này là 2 ô)
-					bPawn.setY(oldP1.y-1);
-					placeCheck.y=oldP1.y-1;
+					bPawn.setY(oldP1.y+1);
+					placeCheck.y=oldP1.y+1;
 					if(piece_Already_There(placeCheck)){
 						if(piece_Enemy_Already_There(placeCheck, enemy))
 						{
 							if(!see_EnemyKingIsChecked(enemy))
 							{
 								bPawn.setPoint(oldP1);
+								System.out.println("dff");
 								return false;
 							}
 						}
@@ -1473,9 +1475,9 @@ public class Player2 {
 					
 				}
 				//neu nhu ko co quan dich ben trai 
-				if(!piece_Enemy_Already_There(new Point(oldP1.x-1,oldP1.y-1), enemy))
+				if(!piece_Enemy_Already_There(new Point(oldP1.x-1,oldP1.y+1), enemy))
 				{
-					if(kill_To_Protect_King(enemy, new Point(oldP1.x-1,oldP1.y-1)))
+					if(kill_To_Protect_King(enemy, new Point(oldP1.x-1,oldP1.y+1)))
 					{
 						if(!see_EnemyKingIsChecked(enemy))
 						{
@@ -1487,9 +1489,9 @@ public class Player2 {
 					}
 				}
 				//neu nhu ko co quan dich ben phair
-				if(piece_Enemy_Already_There(new Point(oldP1.x+1,oldP1.y-1), enemy))
+				if(!piece_Enemy_Already_There(new Point(oldP1.x+1,oldP1.y+1), enemy))
 				{
-					if(kill_To_Protect_King(enemy, new Point(oldP1.x+1,oldP1.y-1)))
+					if(kill_To_Protect_King(enemy, new Point(oldP1.x+1,oldP1.y+1)))
 					{
 						if(!see_EnemyKingIsChecked(enemy))
 						{
@@ -1549,6 +1551,110 @@ public class Player2 {
 			 return false;
 			 
 		 }
+		 public void honor_Queen(int i) {
+				switch (i) {
+				case 9:
+					if (!bPawns[0].isPawn_becomes_Queen()) {
+						bPawns[0].setPawn_becomes_Queen(true);
+						System.out.println("Da tien hoa thanh Hau");
+					}
+					break;
+				case 10:
+					if (!bPawns[1].isPawn_becomes_Queen()) {
+						bPawns[1].setPawn_becomes_Queen(true);
+						System.out.println("Da tien hoa thanh Hau");
+					}
+					break;
+				case 11:
+					if (!bPawns[2].isPawn_becomes_Queen()) {
+						bPawns[2].setPawn_becomes_Queen(true);
+						System.out.println("Da tien hoa thanh Hau");
+					}
+					break;
+				case 12:
+					if (!bPawns[3].isPawn_becomes_Queen()) {
+						bPawns[3].setPawn_becomes_Queen(true);
+						System.out.println("Da tien hoa thanh Hau");
+					}
+					break;
+				case 13:
+					if (!bPawns[4].isPawn_becomes_Queen()) {
+						bPawns[4].setPawn_becomes_Queen(true);
+						System.out.println("Da tien hoa thanh Hau");
+					}
+					break;
+				case 14:
+					if (!bPawns[5].isPawn_becomes_Queen()) {
+						bPawns[5].setPawn_becomes_Queen(true);
+						System.out.println("Da tien hoa thanh Hau");
+					}
+					break;
+				case 15:
+					if (!bPawns[6].isPawn_becomes_Queen()) {
+						bPawns[6].setPawn_becomes_Queen(true);
+						System.out.println("Da tien hoa thanh Hau");
+					}
+					break;
+				case 16:
+					if (!bPawns[7].isPawn_becomes_Queen()) {
+						bPawns[7].setPawn_becomes_Queen(true);
+						System.out.println("Da tien hoa thanh Hau");
+					}
+					break;
+				}
+			}
+			public void moved_Success(int i) {
+				switch (i) {
+				case 9:
+					if (!bPawns[0].isMove_sucess_one_times()) {
+						bPawns[0].setMove_sucess_one_times(true);
+						
+					}
+					break;
+				case 10:
+					if (!bPawns[1].isMove_sucess_one_times()) {
+						bPawns[1].setMove_sucess_one_times(true);
+						
+					}
+					break;
+				case 11:
+					if (!bPawns[2].isMove_sucess_one_times()) {
+						bPawns[2].setMove_sucess_one_times(true);
+						
+					}
+					break;
+				case 12:
+					if (!bPawns[3].isMove_sucess_one_times()) {
+						bPawns[3].setMove_sucess_one_times(true);
+						
+					}
+					break;
+				case 13:
+					if (!bPawns[4].isMove_sucess_one_times()) {
+						bPawns[4].setMove_sucess_one_times(true);
+						
+					}
+					break;
+				case 14:
+					if (!bPawns[5].isMove_sucess_one_times()) {
+						bPawns[5].setMove_sucess_one_times(true);
+						
+					}
+					break;
+				case 15:
+					if (!bPawns[6].isMove_sucess_one_times()) {
+						bPawns[6].setMove_sucess_one_times(true);
+						
+					}
+					break;
+				case 16:
+					if (!bPawns[7].isMove_sucess_one_times()) {
+						bPawns[7].setMove_sucess_one_times(true);
+						
+					}
+					break;
+				}
+			}
 		 public boolean hasMoreElements()
 		    {
 		        return false;
