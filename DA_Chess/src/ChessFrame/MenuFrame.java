@@ -39,6 +39,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import ChessPane.MainGameBoardPane;
 
@@ -59,6 +60,8 @@ public class MenuFrame extends JFrame implements MouseListener {
 	private String myPort;
 	private String currentHostIpAddress = null;
 	
+	
+	private JFrame mainFrame;
 	//
 	private PlayOnlineDialog create_dlg;
 	private PlayOnlineDialog join_dlg;
@@ -67,6 +70,8 @@ public class MenuFrame extends JFrame implements MouseListener {
 	public MenuFrame() {
 		menu_pane = new MenuPane();
 		setContentPane(menu_pane);
+		
+		mainFrame = (JFrame) SwingUtilities.getWindowAncestor(menu_pane);
 
 		single = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("resources/images/single.png")));
 		twoplayer = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("resources/images/twoplayer.png")));
@@ -171,13 +176,13 @@ public class MenuFrame extends JFrame implements MouseListener {
 	        
 	        if(choice == 0){
 	        	button1=new JButton("Create");
-	        	this_is_Server =true;
-	        	this_is_Client=false;
+	        	this_is_Server = true;
+	        	this_is_Client = false;
 	 	        button2=new JButton("Cancel");
 	        } else{
 	        	 button1=new JButton("Join");
 	        	 this_is_Server =false;
-		        	this_is_Client=true;
+	        	 this_is_Client =true;
 	 	        button2=new JButton("Cancel");
 	        }
 	       
@@ -221,7 +226,12 @@ public class MenuFrame extends JFrame implements MouseListener {
 	            		//set ip and port
 	            		menu_pane.removeAll();
 	        			menu_pane.add(mainGameBoardPaneServer,BorderLayout.CENTER);
+	        			menu_pane.add(mainGameBoardPaneServer.getTurnPane(),BorderLayout.EAST);
 	        			menu_pane.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+	        			
+	        			
+	        			mainFrame.setTitle("Server");
+	        			
 	        			pack();
 	        			//Dimension size = getSize();
 	        			//setSize(size);
@@ -241,7 +251,11 @@ public class MenuFrame extends JFrame implements MouseListener {
 	            		//set ip and port
 	            		menu_pane.removeAll();
 	        			menu_pane.add(mainGameBoardPaneClient,BorderLayout.CENTER);
+	        			menu_pane.add(mainGameBoardPaneClient.getTurnPane(),BorderLayout.EAST);
 	        			menu_pane.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+	        			
+	        			mainFrame.setTitle("Client");
+	        			
 	        			pack();
 	        			//Dimension size = getSize();
 	        			//setSize(size);
@@ -252,6 +266,14 @@ public class MenuFrame extends JFrame implements MouseListener {
 	            		System.out.println("ERROR: làm cách nào đó bạn đã vào game mà không nhấn vào PLayOnline ->...");
 	            		
 	            	}
+        			if(this_is_Server)
+        			{
+        				JOptionPane.showMessageDialog(null, "You Are White!", "Infomation", JOptionPane.INFORMATION_MESSAGE);
+        			}
+        			else
+        			{
+        				JOptionPane.showMessageDialog(null, "You Are Black!", "Infomation", JOptionPane.INFORMATION_MESSAGE);
+        			}
 	            	
 	                dispose();
 	            }
@@ -279,7 +301,7 @@ public class MenuFrame extends JFrame implements MouseListener {
 	        
 	        if(choice == 0){
 	        	ip_text.setText(GetHostIpAddress());
-	        	ip_text.setEnabled(false);
+	        	//ip_text.setEnabled(false);
 		        port_text.setText("5000");
 	        }
 	    }
@@ -351,6 +373,7 @@ public class MenuFrame extends JFrame implements MouseListener {
 		{
 			menu_pane.removeAll();
 			menu_pane.add(mainGameBoardPane,BorderLayout.CENTER);
+			menu_pane.add(mainGameBoardPane.getTurnPane(),BorderLayout.EAST);
 			menu_pane.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
 			pack();
 			//Dimension size = getSize();

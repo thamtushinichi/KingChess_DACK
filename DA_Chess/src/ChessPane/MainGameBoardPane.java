@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -21,12 +22,14 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
@@ -62,7 +65,12 @@ public class MainGameBoardPane extends JPanel{
 	//private Recv_Thread rec_from;
 	private TranferData_Thread tranfer_Data_Thread;
 	
-	JDialog dialog;
+	private JDialog dialog;
+	private JLabel player_turn_1, player_turn_2;
+	private JPanel turn_pane;
+//	private ImageIcon black_turn_img = new ImageIcon(getClass().getClassLoader().getResource("resources/images/blackturn.png"));
+//	private ImageIcon white_turn_img = new ImageIcon(getClass().getClassLoader().getResource("resources/images/whiteturn.png"));
+	private JTextField txt_turn=new JTextField(20);
 	
 	public void start_As_Server()
 	{
@@ -83,7 +91,11 @@ public class MainGameBoardPane extends JPanel{
 
 						Sock= serverSocket.accept();
 						dialog.setVisible(false);
-
+						player_turn_1.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/yourturn_enable.png")));
+						player_turn_2.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/enemyturn_disable.png")));
+						turn_pane.add(player_turn_2);
+						turn_pane.add(player_turn_1);
+						
 						System.out.println("sau  khi cho");
 						in= new BufferedReader(new InputStreamReader(Sock.getInputStream()));
 						out =new PrintWriter(Sock.getOutputStream());
@@ -102,11 +114,13 @@ public class MainGameBoardPane extends JPanel{
 			 dialog = new JDialog(SwingUtilities.windowForComponent(this));
 			 dialog.setModal(true);
 		      dialog.setLocation(new Point(520,280));
-		      dialog.setPreferredSize(new Dimension(330,180));
+		      dialog.setPreferredSize(new Dimension(400,60));
 		      
-		      ImageIcon loading = new ImageIcon(getClass().getClassLoader().getResource("resources/images/ajax-loader.gif"));
+		      
+		      ImageIcon loading = new ImageIcon(getClass().getClassLoader().getResource("resources/images/waiting.gif"));
 		      JPanel panel = new JPanel(new BorderLayout());
-		      panel.add(new JLabel("Waiting for other player... ", loading, JLabel.CENTER));
+		      panel.setBackground(Color.black);
+		      panel.add(new JLabel(loading, JLabel.CENTER));
 		      //panel.add(new JLabel("Please wait......."), BorderLayout.PAGE_START);
 		      dialog.add(panel);
 		      
@@ -141,8 +155,15 @@ public class MainGameBoardPane extends JPanel{
 		//handle button Create room
 		try {
 			Sock = new Socket(myIp_Address,port);
+			player_turn_1.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/yourturn_disable.png")));
+			player_turn_2.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/enemyturn_enable.png")));
+			turn_pane.add(player_turn_1);
+			turn_pane.add(player_turn_2);
 			in = new BufferedReader(new InputStreamReader(Sock.getInputStream()));
 			out = new PrintWriter(Sock.getOutputStream());
+			
+			
+			
 			tranfer_Data_Thread.start();
 			game_Started=true;
 			
@@ -166,8 +187,22 @@ public class MainGameBoardPane extends JPanel{
 		repaint();
 		
 	}
+	
+	public JPanel getTurnPane() {
+		return turn_pane;
+	}
+	
 	public MainGameBoardPane()
 	{
+		
+		
+		player_turn_1 = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("resources/images/yourturn_enable.png")));
+		player_turn_2 = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("resources/images/enemyturn_disable.png")));
+		
+		turn_pane = new JPanel(new GridLayout(2, 1));
+		
+		
+		
 //		setSize(new Dimension(600, 600));
 		setPreferredSize(new Dimension(600,600));
 		//setLocation(2,1);
@@ -683,6 +718,35 @@ public class MainGameBoardPane extends JPanel{
 						}
 					}
 				}
+				// sau khi mouse release, doi turn image 
+				if(isThis_is_Server() || isLocal())
+				{
+					if(players_turn==1)
+					{
+						player_turn_1.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/yourturn_enable.png")));
+						player_turn_2.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/enemyturn_disable.png")));
+					}
+					else
+					{
+						player_turn_1.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/yourturn_disable.png")));
+						player_turn_2.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/enemyturn_enable.png")));
+					}
+				}
+				
+				if(isThis_is_Client())
+				{
+					if(players_turn==1)
+					{
+						player_turn_1.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/yourturn_disable.png")));
+						player_turn_2.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/enemyturn_enable.png")));
+						
+					}
+					else
+					{
+						player_turn_1.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/yourturn_enable.png")));
+						player_turn_2.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/enemyturn_disable.png")));
+					}
+				}
 			}
 			
 		}
@@ -992,20 +1056,17 @@ public class MainGameBoardPane extends JPanel{
 	}
 	private void CheckStatus() {
 		if (players_turn == 1) {
-
+			
 			players_turn = 2;
-			//myTool.add_to_History("White : " + P1.Tell_me_About_last_move());
-			//myTool.change_to_Timer2();
 		} else if (players_turn == 2) {
-
+			
 			players_turn = 1;
-			//myTool.add_to_History("Black : " + P2.Tell_me_About_last_move());
-			//myTool.change_to_Timer1();
 		}
 
 		//myStatus.changeStatus(" Check! ");
 	}
 	public void Send_move() {
+		
 		out.print(Box);
 		out.print("\r\n");
 		out.flush();
@@ -1025,7 +1086,7 @@ public class MainGameBoardPane extends JPanel{
 				try
 				{
 					Box=in.readLine(); // đọc dữ liệu
-				
+					
 					
 				}catch(IOException ex)
 				{
@@ -1045,6 +1106,8 @@ public class MainGameBoardPane extends JPanel{
 					{
 						P1.SetInHand(newInHand);
 						players_turn =2;
+						
+						
 						P1.changePosition(new Point(newX,newY), newInHand); //set vi tri cho quan co
 						P2.killedPiece(P1.getPiece_Enemy_Already_There(new Point(newX,newY), P2));
 						P2.checkKing(false);
@@ -1061,6 +1124,7 @@ public class MainGameBoardPane extends JPanel{
 							}
 							else
 							{
+								
 								CheckStatusByInternet();
 							}
 						}
@@ -1079,6 +1143,8 @@ public class MainGameBoardPane extends JPanel{
 						P2.changePosition(newP, newInHand);
 						P1.killedPiece(P2.getPiece_Enemy_Already_There(newP, P1));
 						players_turn=1;
+						
+						
 						P1.checkKing(false);
 						if(P1.see_EnemyKingIsChecked(P2))
 						{
@@ -1100,8 +1166,42 @@ public class MainGameBoardPane extends JPanel{
 						}
 						P2.SetInHand(-1);
 					}
+					
+					if(isThis_is_Server())
+					{
+						//client
+						if(players_turn==1)
+						{
+							player_turn_1.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/yourturn_enable.png")));
+							player_turn_2.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/enemyturn_disable.png")));
+						}
+						else
+						{
+							player_turn_1.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/yourturn_disable.png")));
+							player_turn_2.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/enemyturn_enable.png")));
+						}
+					}
+					
+					if(isThis_is_Client())
+					{
+						//System.out.println("client");
+						if(players_turn==1)
+						{
+							player_turn_1.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/yourturn_disable.png")));
+							player_turn_2.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/enemyturn_enable.png")));
+							
+						}
+						else
+						{
+							player_turn_1.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/yourturn_enable.png")));
+							player_turn_2.setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/images/enemyturn_disable.png")));
+						}
+					}
+					
+					
 					repaint();
 				}
+				
 			}
 		}
 	}
@@ -1111,7 +1211,11 @@ public class MainGameBoardPane extends JPanel{
 	}
 	public void ChangeTurnByInternet() {
 		// TODO Auto-generated method stub
-		
+		if (players_turn == 2) {
+		}
+
+		else if (players_turn == 1) {
+		}
 	}
 	public String getMyIp_Address() {
 		return myIp_Address;
