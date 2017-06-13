@@ -308,7 +308,8 @@ public class Pawn {
 	 public boolean setSeenByCheckKing(Point newP,String Color) {
 	     
 	 mySeen=false;
-	        if((Color.equals("black"))) {
+	 
+		 if((Color.equals("black"))) {
 	            if((newP.y-1==this.y&&newP.x+1==(this.x)||(newP.y-1==this.y&&newP.x-1==(this.x)))) {
 	                
 	                mySeen=true;
@@ -322,8 +323,6 @@ public class Pawn {
 	            } else return false;
 	        }
 	        return false;
-		 
-	     
 	    }
 	 public String tell_me() {
 	        return "Pawn = ("+point.x+','+point.y+")";
