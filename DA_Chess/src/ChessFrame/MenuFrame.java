@@ -41,6 +41,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import ChessPane.HumanAndComputerBoardPane;
 import ChessPane.MainGameBoardPane;
 
 
@@ -66,7 +67,9 @@ public class MenuFrame extends JFrame implements MouseListener {
 	private PlayOnlineDialog create_dlg;
 	private PlayOnlineDialog join_dlg;
 	private boolean mouse_state = true;
-	 private final MainGameBoardPane mainGameBoardPane=new MainGameBoardPane();//cho local
+	private final MainGameBoardPane mainGameBoardPane=new MainGameBoardPane();//cho local
+	private final HumanAndComputerBoardPane human_Computer_BoardPane= new HumanAndComputerBoardPane();
+	 
 	public MenuFrame() {
 		menu_pane = new MenuPane();
 		setContentPane(menu_pane);
@@ -352,7 +355,19 @@ public class MenuFrame extends JFrame implements MouseListener {
 		Object source = e.getSource();
 		if (source == quit) {
 			quit();
-		} else if (source == playonline) {
+		} 
+		if(source==single)
+		{
+			
+			menu_pane.removeAll();
+			menu_pane.add(human_Computer_BoardPane,BorderLayout.CENTER);
+			menu_pane.add(mainGameBoardPane.getTurnPane(),BorderLayout.EAST);
+			menu_pane.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+			pack();
+			repaint();
+			
+		}
+		else if (source == playonline) {
 			//playonline_menu_pane = new PlayOnlinePane();
 			//setContentPane(playonline_menu_pane);
 			menu_pane.remove(grid_menu);
@@ -396,9 +411,12 @@ public class MenuFrame extends JFrame implements MouseListener {
 		}
 		else{
 			 source = e.getSource();
-			if (source == quit) {
-				quit();
-			} else if (source == playonline) {
+//			if (source == quit) {
+//				quit();
+//			} 
+//			else 
+			
+			 if (source == playonline) {
 				//playonline_menu_pane = new PlayOnlinePane();
 				//setContentPane(playonline_menu_pane);
 				menu_pane.remove(grid_menu);

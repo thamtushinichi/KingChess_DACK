@@ -301,6 +301,7 @@ public class Player2 {
 	        }
 	        return null;
 	    }
+		
 		public boolean checkMove(Point newP,int i)
 		{
 			 choosenOne=i;

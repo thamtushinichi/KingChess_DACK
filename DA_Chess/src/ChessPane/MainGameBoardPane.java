@@ -19,33 +19,32 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.swing.BorderFactory;
+
+
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
+
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
 
 
-import ChessFrame.MenuFrame;
-import main.MainFrame;
+
+
 
 import players.Player1;
 import players.Player2;
 
+@SuppressWarnings("serial")
 public class MainGameBoardPane extends JPanel{
 	private Player1 P1= new Player1();
 	private Player2 P2= new Player2();
 	private final int Divide= 600/8; // 600 là kích thước bề ngang hoặc rộng của bàn cờ, 8 là số ô cờ
 	//chúng ta tính được cạnh của 1 ô cờ là bao nhiêu , đáp án: 75 pixel
-	private int move=0;
+	//private int move=0;
 	private Rectangle2D rec; // 1 ô cờ là 1 Rectangle2D
 	private short players_turn=1;
 	private boolean GameOver=false; //check game over
@@ -179,7 +178,7 @@ public class MainGameBoardPane extends JPanel{
 		// TODO Auto-generated method stub
 		P1= new Player1();
 		P2=new Player2();
-		move=0;
+		//move=0;
 		players_turn=1;
 		GameOver=false;
 		local=true;
@@ -283,7 +282,7 @@ public class MainGameBoardPane extends JPanel{
 			}
 		}
 	}
-	private class Mouse_Here implements MouseListener{
+	public class Mouse_Here implements MouseListener{
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
@@ -882,7 +881,8 @@ public class MainGameBoardPane extends JPanel{
 					return true;
 				}
 				P1.SetInHand(-1);
-				this.move=0;
+				P2.SetInHand(-1);
+				//this.move=0;
 				return false;
 			}
 		}
@@ -919,11 +919,10 @@ public class MainGameBoardPane extends JPanel{
 		myY=(column * width /8) - Divide;
 		return myY;
 	}
-	private class Mouse_when_Move implements MouseMotionListener{
+	public class Mouse_when_Move implements MouseMotionListener{
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			// TODO Auto-generated method stub
 			int x= e.getX();
 			int y= e.getY();
 			if(controll_Game_Type(x, y))
@@ -934,7 +933,6 @@ public class MainGameBoardPane extends JPanel{
 
 		@Override
 		public void mouseMoved(MouseEvent e) {
-			// TODO Auto-generated method stub
 			
 		}
 		

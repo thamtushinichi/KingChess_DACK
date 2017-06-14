@@ -708,6 +708,51 @@ public class Player1 {
 		return true;
 	}
 
+	//with bot AI
+	public boolean see_EnemyKingIsChecked(Computer black) {
+		Point My_King_Position = wk.returnPosition();
+		boolean flag = false;
+		// start checking the King
+		// duyet qua tất cả 16 quân cờ của đối phương
+		for (int i = 1; i < 17; i++) {
+			if (i < 9) {
+				// tức là chỉ duyệt trong phạm vi quân chủ lực hàng dưới
+				if (black.checkMove(My_King_Position, i)) {
+					flag = true;
+					for (int j = 1; j < 33; j++) {
+						if (j < 17) {
+							if (black.checkWay(My_King_Position, black.returnPosition(j), i)) {
+								// Means there is somting in the Way so can't
+								// move'
+								flag = false;
+							}
+						} else {
+
+							if (j != 24)
+								if (black.checkWay(My_King_Position, returnPosition(j), i)) {
+
+									flag = false;
+									// Means there is somting in the Way so
+									// can't move'
+								}
+						}
+					}
+					if (flag) {
+						break;
+					}
+				}
+			} else {
+				// for Pawn
+				if (black.setSeentoPawns(i, My_King_Position)) {
+					break;
+				}
+			}
+			if (i == 16) {
+				return false;
+			}
+		}
+		return true;
+	}
 	// check nếu vị trí tiến tới là quân white (quân phe mình)
 	public boolean piece_Already_There(Point newP) {
 		Point samePostion;
@@ -773,7 +818,7 @@ public class Player1 {
 			if (piece_Already_There(placeCheck))// nếu như quân đồng minh đang ở
 												// đây
 			{
-				if (!see_EnemyKingIsChecked(enemy)) // nếu vua đối phương không
+				if (!see_EnemyKingIsChecked(enemy)) // nếu vua của mình không
 													// bị chiếu
 				{
 					// Vị trí bên phải quân KIng ko đi được, phải đưa quân King
