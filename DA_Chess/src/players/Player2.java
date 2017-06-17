@@ -301,7 +301,30 @@ public class Player2 {
 	        }
 	        return null;
 	    }
-		
+		public void setPixelPoint(int i,Point pixelPoint) {
+	        choosenOne=i;
+	        switch(choosenOne) {
+	            
+	            case 1: br1.setPixelPoint(pixelPoint);
+	            break;
+	            case 2: br2.setPixelPoint(pixelPoint); break;
+	            case 3: bn1.setPixelPoint(pixelPoint); break;
+	            case 4: bn2.setPixelPoint(pixelPoint); break;
+	            case 5:  bb1.setPixelPoint(pixelPoint); break;
+	            case 6:  bb2.setPixelPoint(pixelPoint); break;
+	            case 7:  bq.setPixelPoint(pixelPoint); break;
+	            case 8:  bk.setPixelPoint(pixelPoint); break;
+	            case 9:   bPawns[0].setPixelPoint(pixelPoint); break;
+	            case 10:   bPawns[1].setPixelPoint(pixelPoint); break;
+	            case 11:   bPawns[2].setPixelPoint(pixelPoint); break;
+	            case 12:   bPawns[3].setPixelPoint(pixelPoint); break;
+	            case 13:   bPawns[4].setPixelPoint(pixelPoint); break;
+	            case 14:  bPawns[5].setPixelPoint(pixelPoint); break;
+	            case 15:  bPawns[6].setPixelPoint(pixelPoint); break;
+	            case 16:  bPawns[7].setPixelPoint(pixelPoint); break;
+	        }
+	        return ;
+	    }
 		public boolean checkMove(Point newP,int i)
 		{
 			 choosenOne=i;

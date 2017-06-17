@@ -130,8 +130,7 @@ public class Pawn {
 	}
 	public boolean canMove(int x,int y, String typeColor)
 	{
-		if(!pawn_becomes_Queen)
-		{
+		
 			
 			if((typeColor.equals("black"))) {
             if((((y-1==this.y)&&(x==(this.x)))) /*&&!Check_Solider_Sees(x,y)*/) {
@@ -159,28 +158,10 @@ public class Pawn {
                 return false;
         }
         return false;
-		}
-		else
-		{
-			//nếu như là quân tốt đã tiến hóa thành quân Hậu
-			
-			if (((y == this.y) && (x > (this.x) || (x < this.x)))) {
-				return true;
-			} else if ((((y > this.y) || (y < this.y)) && (x == (this.x)))) {
-				return true;
-			} else if ((x - y) == (this.x - this.y)) {
-				return true;
-			} else if ((x + y) == (this.x + this.y)) {
-				return true;
-			} else {
-				return false;
-			}
-		}
 	}
 	public boolean isPieceInMyWay(int x,int y,Point othersPosition,String typeColor)
 	{
-		if(!pawn_becomes_Queen)
-		 {
+		
 			if(this.y-y==2||this.y-y==-2) {
 	            if((typeColor.equals("black"))) {
 	                
@@ -194,110 +175,11 @@ public class Pawn {
 	                if(((y+1==othersPosition.y)&&(x==(othersPosition.x)) &&!movedBefore)) {
 	                    
 	                    return true;
-	                    
 	                } else
 	                    return false;
 	            }
 	        }
 	        return false;
-		 }
-		else
-		{
-			//khi là quân Hậu
-			int j = y;
-			int i = x;
-			if (((y == this.y) && (x > (this.x) || (x < (this.x))))) {
-				if ((this.x < i))
-					while ((i != this.x + 1)) {
-						i--;
-						if (((othersPosition.y) == j) && ((othersPosition.x == i)))// there
-																					// Same
-																					// Color
-																					// piece
-						{
-							return true;
-						}
-					}
-
-				else if ((this.x > i)) {
-					while ((i != this.x - 1)) {
-						i++;
-						if (((othersPosition.y) == j) && ((othersPosition.x == i))) {
-							return true;
-						}
-					}
-				}
-			}
-
-			else if ((((y > this.y) || (y < this.y)) && (x == (this.x)))) {
-				if ((this.y < j)) {
-					while ((j != this.y + 1)) {
-						j--;
-						if (((othersPosition.y) == j) && ((othersPosition.x == i))) {
-							return true;
-						}
-					}
-				} else if ((this.y > j)) {
-					while ((j != this.y - 1)) {
-						j++;
-
-						if (((othersPosition.y) == j) && ((othersPosition.x == i))) {
-							return true;
-						}
-					}
-
-				}
-			} else if ((x - y) == (this.x - this.y)) {
-				if (x > this.x && y > this.y) {
-					while ((j != this.y + 1) && (i != this.x + 1)) {
-						j--;
-						i--;
-						if (((othersPosition.y) == j) && ((othersPosition.x == i))) {
-							return true;
-						}
-					}
-				} else if (x < this.x && y < this.y)
-
-					while ((j != this.y - 1) && (i != this.x - 1)) {
-						j++;
-						i++;
-
-						if (((othersPosition.y) == j) && ((othersPosition.x == i))) {
-							return true;
-						}
-
-					}
-			}
-
-			else if ((x + y) == (this.x + this.y)) {
-
-				if ((this.x < i) && (this.y > j)) {
-					while ((j != this.y - 1) && (i != this.x + 1)) {
-						j++;
-						i--;
-
-						if (((othersPosition.y) == j) && ((othersPosition.x == i))) {
-							return true;
-						}
-
-					}
-
-				}
-
-				else if ((this.x > i) && (this.y < j)) {
-					while ((j != this.y + 1) && (i != this.x - 1)) {
-						j--;
-						i++;
-
-						if (((othersPosition.y) == j) && ((othersPosition.x == i))) {
-							return true;
-						}
-					}
-				}
-
-			}
-			return false;
-		}
 	}
 	public boolean isMySeen() {
 		return mySeen;
