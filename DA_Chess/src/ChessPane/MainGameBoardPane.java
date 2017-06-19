@@ -57,7 +57,7 @@ public class MainGameBoardPane extends JPanel {
 	private String myIp_Address;
 	private String myPort;
 	// init socket
-	//private ServerSocket serverSocket;
+	private ServerSocket serverSocket;
 	private Socket Sock; // init Sock giao tiếp giữa 2 cổng
 	private BufferedReader in; // đọc dữ liệu
 	// private Recv_Thread rec_from;
@@ -67,9 +67,11 @@ public class MainGameBoardPane extends JPanel {
 	private JLabel player_turn_1, player_turn_2;
 	private JPanel turn_pane;
 	
+	
 	private JLabel cancel_waiting_dialog;
 	private JButton cancel_button = new JButton("Cancel");
-	public boolean check_cancel;
+	private JLabel cancel;
+	private boolean check_cancel;
 	
 	private Mouse_when_Move mouse_Drag_And_Drop = new Mouse_when_Move();
 	private Mouse_Here mouseHereEvent = new Mouse_Here();
@@ -82,8 +84,20 @@ public class MainGameBoardPane extends JPanel {
 	// ImageIcon(getClass().getClassLoader().getResource("resources/images/whiteturn.png"));
 	private JTextField txt_turn = new JTextField(20);
 	
+	public boolean getCheckCancel() {
+		return check_cancel;
+    }
+	
+	public void setCheckCancel(boolean check) {
+		check_cancel = check;
+    }
+	
 	public Socket getSocket() {
 		return Sock;
+    }
+	
+	public ServerSocket getServerSocket() {
+		return serverSocket;
     }
 	
 	public Thread getTransferThread(){
@@ -94,7 +108,7 @@ public class MainGameBoardPane extends JPanel {
 		return Server_Thread;
 	}
 
-	public boolean start_As_Server() {
+	public void start_As_Server() {
 		check_cancel = false;
 		tranfer_Data_Thread = new TranferData_Thread();
 		setGame_Started(false);
@@ -104,7 +118,7 @@ public class MainGameBoardPane extends JPanel {
 		// handle button Create room
 		try {
 			InetAddress thisIp = InetAddress.getByName(myIp_Address);
-			ServerSocket serverSocket = new ServerSocket(port, 1, thisIp);
+			 serverSocket = new ServerSocket(port, 1, thisIp);
 			Server_Thread = new Thread(new Runnable() {
 				public synchronized void run() {
 					try {
@@ -135,18 +149,28 @@ public class MainGameBoardPane extends JPanel {
 				}
 			});
 			Server_Thread.start();
+			
+			if(check_cancel == true){
+				serverSocket.close();
+				return;
+			}
+			
 			dialog = new JDialog(SwingUtilities.windowForComponent(this));
 			dialog.setModal(true);
 			dialog.setLocation(new Point(470, 300));
-			dialog.setPreferredSize(new Dimension(430, 145));
+			dialog.setPreferredSize(new Dimension(300, 150));
 
-			ImageIcon loading = new ImageIcon(getClass().getClassLoader().getResource("resources/images/waiting.gif"));
+			ImageIcon loading = new ImageIcon(getClass().getClassLoader().getResource("resources/images/pm_waiting.gif"));
 			JPanel panel = new JPanel(new BorderLayout());
-			panel.setBackground(Color.white);
+			panel.setBackground(Color.BLACK);
 			panel.add(new JLabel(loading, JLabel.CENTER), BorderLayout.NORTH);
-			cancel_button.addMouseListener(mouseHereEvent);
-			cancel_button.setSize(50, 30);
-			panel.add(cancel_button);
+			
+			cancel = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("resources/images/cancel_waiting.png")));
+			panel.add(cancel, BorderLayout.CENTER);
+			cancel.addMouseListener(mouseHereEvent);
+			//cancel_button.addMouseListener(mouseHereEvent);
+			//cancel_button.setSize(50, 30);
+			//panel.add(cancel_button);
 			dialog.add(panel);
 
 		
@@ -155,10 +179,7 @@ public class MainGameBoardPane extends JPanel {
 			dialog.pack();
 			dialog.setVisible(true);
 			
-			if(check_cancel == true){
-				serverSocket.close();
-				return false;
-			}
+			System.out.println(serverSocket.getSoTimeout());
 
 			// kết thúc việc start server và server lúc này đang chờ kết nối
 
@@ -169,7 +190,6 @@ public class MainGameBoardPane extends JPanel {
 		}
 		setLocal(false);
 		repaint();
-		return true;
 	}
 
 	public void start_As_Client() {
@@ -227,7 +247,7 @@ public class MainGameBoardPane extends JPanel {
 		player_turn_2 = new JLabel(
 				new ImageIcon(getClass().getClassLoader().getResource("resources/images/enemyturn_disable.png")));
 
-		turn_pane = new JPanel(new GridLayout(2, 1));
+		turn_pane = new JPanel(new GridLayout(3, 1));
 
 		// setSize(new Dimension(600, 600));
 		setPreferredSize(new Dimension(600, 600));
@@ -299,18 +319,20 @@ public class MainGameBoardPane extends JPanel {
 		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
 			Object source = e.getSource();
-			if (source == cancel_button) {
+			if (source == cancel) {
 				check_cancel = true;
 				dialog.setVisible(false);
-				try {
-					Sock.close();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 				
-				still_transfer = false;
+					Server_Thread.interrupt();
 				
+					try {
+						serverSocket.close();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					//serverSocket = null;
+					
 			}
 		}
 
@@ -978,18 +1000,26 @@ public class MainGameBoardPane extends JPanel {
 
 	class TranferData_Thread extends Thread {
 		public synchronized void run() {
+//			if(out.checkError()){
+//				JOptionPane.showConfirmDialog(getParent(),
+//						"Enemy exited!!!\n", "Game Over",
+//						JOptionPane.DEFAULT_OPTION);
+//				return;
+//			}
 			while (!Sock.isClosed()) {
 				// lắng nghe
 				try {
 					Box = in.readLine(); // đọc dữ liệu
-
+					if(Box == null){
+						String a = this_is_Server? "Client" : "Server";
+						JOptionPane.showConfirmDialog(getParent(),
+								a + " exited!!!\n", "Game Over",
+								JOptionPane.DEFAULT_OPTION);
+						break;
+					}
 				} catch (IOException ex) {
 					ex.printStackTrace();
 					System.out.println("ERROR when i handle Thread method");
-					System.out.println(this_is_Server? "Server" : "Client");
-//					JOptionPane.showConfirmDialog(getParent(),
-//							"Enemy exited!!!\n" + a, "Game Over",
-//							JOptionPane.DEFAULT_OPTION);
 				}
 				if (Box != null) {
 					int newInHand = Integer.parseInt(Box);
@@ -1088,6 +1118,14 @@ public class MainGameBoardPane extends JPanel {
 				}
 
 			}
+//			if(!Sock.isConnected()){
+//				String a = this_is_Server? "Client" : "Server";
+//				JOptionPane.showConfirmDialog(getParent(),
+//						a + " exited!!!\n", "Game Over",
+//						JOptionPane.DEFAULT_OPTION);
+//			}
+
+			
 		}
 	}
 

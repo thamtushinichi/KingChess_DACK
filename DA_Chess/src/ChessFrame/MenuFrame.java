@@ -76,8 +76,8 @@ public class MenuFrame extends JFrame implements MouseListener {
 																				// local
 	private final HumanAndComputerBoardPane human_Computer_BoardPane = new HumanAndComputerBoardPane();
 	
-	MainGameBoardPane mainGameBoardPaneServer;
-	MainGameBoardPane mainGameBoardPaneClient;
+	private MainGameBoardPane mainGameBoardPaneServer;
+	private MainGameBoardPane mainGameBoardPaneClient;
 	public MenuFrame() {
 		menu_pane = new MenuPane();
 		setContentPane(menu_pane);
@@ -122,7 +122,7 @@ public class MenuFrame extends JFrame implements MouseListener {
 
 		public MenuPane() {
 			bg = new ImageIcon(getClass().getClassLoader().getResource("resources/images/KingChessBackground.jpg"));
-			setPreferredSize(new Dimension(1160, 640));
+			setPreferredSize(new Dimension(960, 640));
 			addMouseListener(this);
 
 		}
@@ -234,21 +234,22 @@ public class MenuFrame extends JFrame implements MouseListener {
 						mainGameBoardPaneServer.setMyPort(myPort);
 						mainGameBoardPaneServer.setThis_is_Server(true);
 						mainGameBoardPaneServer.setThis_is_Client(false);
-						
+						mainGameBoardPaneServer.start_As_Server();
 						// set ip and port
-						if (mainGameBoardPaneServer.start_As_Server() == true) {
+						if (mainGameBoardPaneServer.getCheckCancel() == false) {
 							menu_pane.removeAll();
 
 							quit_while_playing = new JLabel(new ImageIcon(
 									getClass().getClassLoader().getResource("resources/images/quit.png")));
 							quit_while_playing.addMouseListener(MenuFrame.this);
 
-							grid_playing_option = new JPanel(new GridLayout(1, 1));
-							grid_playing_option.add(quit_while_playing, BorderLayout.SOUTH);
-							menu_pane.add(grid_playing_option, BorderLayout.WEST);
+//							grid_playing_option = new JPanel(new GridLayout(1, 1));
+//							grid_playing_option.add(quit_while_playing, BorderLayout.SOUTH);
+//							menu_pane.add(grid_playing_option, BorderLayout.WEST);
 
 							menu_pane.add(mainGameBoardPaneServer, BorderLayout.CENTER);
 
+							mainGameBoardPaneServer.getTurnPane().add(quit_while_playing);
 							menu_pane.add(mainGameBoardPaneServer.getTurnPane(), BorderLayout.EAST);
 							menu_pane.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
 							mainFrame.setTitle("Server");
@@ -277,11 +278,13 @@ public class MenuFrame extends JFrame implements MouseListener {
 								getClass().getClassLoader().getResource("resources/images/quit.png")));
 						quit_while_playing.addMouseListener(MenuFrame.this);
 
-						grid_playing_option = new JPanel(new GridLayout(1, 1));
-						grid_playing_option.add(quit_while_playing, BorderLayout.SOUTH);
-						menu_pane.add(grid_playing_option, BorderLayout.WEST);
+//						grid_playing_option = new JPanel(new GridLayout(1, 1));
+//						grid_playing_option.add(quit_while_playing, BorderLayout.SOUTH);
+//						menu_pane.add(grid_playing_option, BorderLayout.WEST);
 						
 						menu_pane.add(mainGameBoardPaneClient, BorderLayout.CENTER);
+						
+						mainGameBoardPaneClient.getTurnPane().add(quit_while_playing);
 						menu_pane.add(mainGameBoardPaneClient.getTurnPane(), BorderLayout.EAST);
 						menu_pane.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
 						mainFrame.setTitle("Client");
@@ -459,6 +462,18 @@ public class MenuFrame extends JFrame implements MouseListener {
 				Dimension size = getSize();
 				setSize(size);
 			} else if (source == createroom) {
+				if(mainGameBoardPaneServer != null){
+					System.out.println("khac null");
+//					try {
+//						mainGameBoardPaneServer.getSocket().close();
+//					} catch (IOException e1) {
+//						// TODO Auto-generated catch block
+//						e1.printStackTrace();
+//					}
+					
+					mainGameBoardPaneServer.getServerThread().interrupt();
+					mainGameBoardPaneServer = null;
+				}
 				create_dlg = new PlayOnlineDialog(0);
 				create_dlg.setTitle("Create Room");
 				create_dlg.setVisible(true);
@@ -472,12 +487,11 @@ public class MenuFrame extends JFrame implements MouseListener {
 				try {
 					if(this_is_Server){
 						mainGameBoardPaneServer.getSocket().shutdownInput();
-						//mainGameBoardPaneServer.getSocket().shutdownOutput();
+						mainGameBoardPaneServer.getServerSocket().close();
 						mainGameBoardPaneServer.getSocket().close();
 					}
 					else{
 						mainGameBoardPaneClient.getSocket().shutdownInput();
-						//mainGameBoardPaneClient.getSocket().shutdownOutput();
 						mainGameBoardPaneClient.getSocket().close();
 					}
 					
@@ -490,9 +504,11 @@ public class MenuFrame extends JFrame implements MouseListener {
 				if(this_is_Server){
 					mainGameBoardPaneServer.getTransferThread().interrupt();
 					mainGameBoardPaneServer.getServerThread().interrupt();
+					mainGameBoardPaneServer = null;
 				}
 				else{
 					mainGameBoardPaneClient.getTransferThread().interrupt();
+					mainGameBoardPaneClient = null;
 				}
 				
 				myIp_Address = "";
@@ -506,8 +522,8 @@ public class MenuFrame extends JFrame implements MouseListener {
 				setSize(size);
 				
 				
-				mainGameBoardPaneServer = null;
-				mainGameBoardPaneClient = null;
+				
+				
 			}
 		}
 
