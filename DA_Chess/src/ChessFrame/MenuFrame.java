@@ -63,6 +63,7 @@ public class MenuFrame extends JFrame implements MouseListener {
 	// set up
 	private boolean this_is_Server;
 	private boolean this_is_Client;
+	private boolean this_is_Local;
 	private String myIp_Address;
 	private String myPort;
 	private String currentHostIpAddress = null;
@@ -403,6 +404,8 @@ public class MenuFrame extends JFrame implements MouseListener {
 		} else if (source == twoplayer) {
 			menu_pane.removeAll();
 			
+			this_is_Local = true;
+			
 			quit_while_playing = new JLabel(new ImageIcon(
 					getClass().getClassLoader().getResource("resources/images/quit.png")));
 			quit_while_playing.addMouseListener(MenuFrame.this);
@@ -484,38 +487,50 @@ public class MenuFrame extends JFrame implements MouseListener {
 				join_dlg.setVisible(true);
 				mouse_state = false;
 			} else if (source == quit_while_playing) {
-				try {
-					if(this_is_Server){
-						mainGameBoardPaneServer.getSocket().shutdownInput();
-						mainGameBoardPaneServer.getServerSocket().close();
-						mainGameBoardPaneServer.getSocket().close();
-					}
-					else{
-						mainGameBoardPaneClient.getSocket().shutdownInput();
-						mainGameBoardPaneClient.getSocket().close();
-					}
-					
-					
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-				if(this_is_Server){
-					mainGameBoardPaneServer.getTransferThread().interrupt();
-					mainGameBoardPaneServer.getServerThread().interrupt();
-					mainGameBoardPaneServer = null;
+				if(this_is_Local == true){
+					this_is_Local = false;
+					menu_pane.removeAll();
+					menu_pane.add(grid_menu, BorderLayout.SOUTH);
 				}
 				else{
-					mainGameBoardPaneClient.getTransferThread().interrupt();
-					mainGameBoardPaneClient = null;
+					try {
+						if(this_is_Server){
+							mainGameBoardPaneServer.getSocket().shutdownInput();
+							mainGameBoardPaneServer.getServerSocket().close();
+							mainGameBoardPaneServer.getSocket().close();
+						}
+						else{
+							mainGameBoardPaneClient.getSocket().shutdownInput();
+							mainGameBoardPaneClient.getSocket().close();
+						}
+						
+						
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+					if(this_is_Server){
+						mainGameBoardPaneServer.getTransferThread().interrupt();
+						mainGameBoardPaneServer.getServerThread().interrupt();
+						mainGameBoardPaneServer = null;
+						this_is_Server = false;
+					}
+					else{
+						mainGameBoardPaneClient.getTransferThread().interrupt();
+						mainGameBoardPaneClient = null;
+						this_is_Client = false;
+					}
+					
+					myIp_Address = "";
+					myPort = "";
+					
+					menu_pane.removeAll();
+					menu_pane.add(grid_playonline_menu, BorderLayout.SOUTH);
 				}
 				
-				myIp_Address = "";
-				myPort = "";
 				
-				menu_pane.removeAll();
-				menu_pane.add(grid_playonline_menu, BorderLayout.SOUTH);
+				
 				menu_pane.setBorder(BorderFactory.createEmptyBorder(380, 20, 20, 0));
 				pack();
 				Dimension size = getSize();
