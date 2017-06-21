@@ -493,9 +493,19 @@ public class MainGameBoardPane extends JPanel {
 																					// P1
 										if (P2.checkEmenyGameOver(P1)) {
 											// neu nhu P2 game over
+											GameOver();
 											JOptionPane.showConfirmDialog(getParent(),
 													"Check Mate\n White won the game", "Game Over",
 													JOptionPane.DEFAULT_OPTION);
+											can_send = true;
+											if (can_send && ((isThis_is_Server() || isThis_is_Client()))) {
+												// chỗ này để thực hiện việc send đi dữ liệu
+												// chạy hàm Send_move(); để send dữ liệu
+												Box = Integer.toString(P1.GetInHand()) + Integer.toString(newP.x)
+												+ Integer.toString(newP.y);
+												Send_move();
+
+											}
 											return;
 										}
 
@@ -531,6 +541,11 @@ public class MainGameBoardPane extends JPanel {
 										P2.changePosition(f, killed);
 
 									}
+									
+									if (P1.returncheckKing()) {
+										P1.changePosition(myOld, P1.GetInHand());
+									}
+									
 									if (!P1.returncheckKing()) {
 										if (P2.see_EnemyKingIsChecked(P1)) {
 											// nếu như vua đối phương bị check
@@ -540,9 +555,17 @@ public class MainGameBoardPane extends JPanel {
 											if (P2.checkEmenyGameOver(P1)) {
 												// nếu như Player 1 game over
 												GameOver();
-												Box = Integer.toString(P2.GetInHand()) + Integer.toString(newP.x)
-														+ Integer.toString(newP.y);
-												can_send = true;// co the gui di
+												can_send = true;
+												if (can_send && ((isThis_is_Server() || isThis_is_Client()))) {
+													// chỗ này để thực hiện việc send đi dữ liệu
+													// chạy hàm Send_move(); để send dữ liệu
+													Box = Integer.toString(P1.GetInHand()) + Integer.toString(newP.x)
+													+ Integer.toString(newP.y);
+													Send_move();
+
+												}
+												return;
+												// co the gui di
 																// qua internet
 
 											} else {
@@ -552,29 +575,6 @@ public class MainGameBoardPane extends JPanel {
 												can_send = true;
 											}
 										}
-										// else
-										// {
-										// P2.checkKing(false);
-										// end_move=false;
-										// if(P2.checkEmenyGameOver(P1))
-										// {
-										// Box =
-										// Integer.toString(P2.GetInHand()) +
-										// Integer.toString(newP.x) +
-										// Integer.toString(newP.y);
-										// GameOver();
-										// can_send = true;
-										// }
-										// else
-										// {
-										// Box =
-										// Integer.toString(P1.GetInHand()) +
-										// Integer.toString(newP.x) +
-										// Integer.toString(newP.y);
-										// CheckStatus();
-										// can_send=true;
-										// }
-										// }
 										if (end_move) {
 
 											Box = Integer.toString(P1.GetInHand()) + Integer.toString(newP.x)
@@ -714,6 +714,17 @@ public class MainGameBoardPane extends JPanel {
 
 										if (P1.checkEmenyGameOver(P2)) {
 											// neu nhu P2 game over
+											GameOver();
+											can_send = true;
+											if (can_send && ((isThis_is_Server() || isThis_is_Client()))) {
+												// chỗ này để thực hiện việc send đi dữ liệu
+												// chạy hàm Send_move(); để send dữ liệu
+												Box = Integer.toString(P2.GetInHand()) + Integer.toString(newP.x)
+												+ Integer.toString(newP.y);
+												Send_move();
+
+											}
+											
 											JOptionPane.showConfirmDialog(getParent(),
 													"Check Mate\n Black won the game", "Game Over",
 													JOptionPane.DEFAULT_OPTION);
@@ -763,10 +774,18 @@ public class MainGameBoardPane extends JPanel {
 											P1.checkKing(true);
 											end_move = false;
 											if (P1.checkEmenyGameOver(P2)) {
-												Box = Integer.toString(P1.GetInHand()) + Integer.toString(newP.x)
-														+ Integer.toString(newP.y);
+												
 												GameOver();
 												can_send = true;
+												if (can_send && ((isThis_is_Server() || isThis_is_Client()))) {
+													// chỗ này để thực hiện việc send đi dữ liệu
+													// chạy hàm Send_move(); để send dữ liệu
+													Box = Integer.toString(P2.GetInHand()) + Integer.toString(newP.x)
+													+ Integer.toString(newP.y);
+													Send_move();
+
+												}
+												return;
 											} else {
 												Box = Integer.toString(P2.GetInHand()) + Integer.toString(newP.x)
 														+ Integer.toString(newP.y);
@@ -1079,6 +1098,8 @@ public class MainGameBoardPane extends JPanel {
 							if (P2.checkEmenyGameOver(P1)) {
 								// mean :
 								System.out.println("Game over P1 win!!!");
+								JOptionPane.showConfirmDialog(getParent(), "Check Mate\n White won the game", "Game Over",
+										JOptionPane.DEFAULT_OPTION);
 								GameOver();
 							} else {
 
@@ -1103,6 +1124,8 @@ public class MainGameBoardPane extends JPanel {
 							P1.checkKing(true);
 							if (P1.checkEmenyGameOver(P2)) {
 								System.out.println("Game Over P2 win !!!");
+								JOptionPane.showConfirmDialog(getParent(), "Check Mate\n Black won the game", "Game Over",
+										JOptionPane.DEFAULT_OPTION);
 								GameOver();
 							} else {
 								CheckStatusByInternet();

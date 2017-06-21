@@ -1316,6 +1316,65 @@ public class Player2 {
 			inHand=7;
 			if(oldP1.x!=20)
 			{
+				//quân Hậu đi đường chéo trái tren
+				 for(int x= oldP1.x,y= oldP1.y;x>=1 && y>=1;x--,y--) {
+		                
+		                bq.setX(x);
+		                bq.setY(y);
+		                placeCheck.x=x;
+		                placeCheck.y=y;
+		                if(checkWayToPosition(enemy, oldP1)) {
+		                    if(kill_To_Protect_King(enemy,returnPosition(inHand))) {
+		                        something_killed=true;
+		                    }
+		                    
+		                    if(piece_Already_There(placeCheck))
+		                        if(!see_EnemyKingIsChecked(enemy)) {
+		                        bq.setPoint(oldP1);
+		                        
+		                        if(something_killed) {
+		                            enemy.changePosition(other,piece_Is_Killed_To_Protect_King);
+		                            something_killed=false;
+		                        }
+		                        return false;
+		                        }
+		                }
+		                
+		                if(something_killed) {
+		                    enemy.changePosition(other,piece_Is_Killed_To_Protect_King);
+		                    something_killed=false;
+		                }
+		                
+		            }
+				 //quân hậu đi đường phải duoi 
+				 for(int x= oldP1.x,y= oldP1.y;y<=8 && x<=8;x++,y++) {
+		                
+		                bq.setX(x);
+		                bq.setY(y);
+		                placeCheck.x=x;
+		                placeCheck.y=y;
+		                if(checkWayToPosition(enemy, oldP1)) {
+		                    if(kill_To_Protect_King(enemy,returnPosition(inHand))) {
+		                        something_killed=true;
+		                    }
+		                    
+		                    if(piece_Already_There(placeCheck))
+		                        if(!see_EnemyKingIsChecked(enemy)) {
+		                        bq.setPoint(oldP1);
+		                        if(something_killed) {
+		                            enemy.changePosition(other,piece_Is_Killed_To_Protect_King);
+		                            something_killed=false;
+		                        }
+		                        return false;
+		                        }
+		                }
+		                
+		                if(something_killed) {
+		                    enemy.changePosition(other,piece_Is_Killed_To_Protect_King);
+		                    something_killed=false;
+		                }
+		                
+		            }
 				//quân Hậu đi đường chéo trái dưới
 				 for(int x= oldP1.x,y= oldP1.y;x>=1 && y<=8;x--,y++) {
 		                
