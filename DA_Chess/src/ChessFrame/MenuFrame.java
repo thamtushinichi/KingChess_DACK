@@ -64,6 +64,7 @@ public class MenuFrame extends JFrame implements MouseListener {
 	private boolean this_is_Server;
 	private boolean this_is_Client;
 	private boolean this_is_Local;
+	private boolean this_is_Single;
 	private String myIp_Address;
 	private String myPort;
 	private String currentHostIpAddress = null;
@@ -73,9 +74,9 @@ public class MenuFrame extends JFrame implements MouseListener {
 	private PlayOnlineDialog create_dlg;
 	private PlayOnlineDialog join_dlg;
 	private boolean mouse_state = true;
-	private final MainGameBoardPane mainGameBoardPane = new MainGameBoardPane();// cho
+	private MainGameBoardPane mainGameBoardPane;// cho
 																				// local
-	private final HumanAndComputerBoardPane human_Computer_BoardPane = new HumanAndComputerBoardPane();
+	private HumanAndComputerBoardPane human_Computer_BoardPane;
 	
 	private MainGameBoardPane mainGameBoardPaneServer;
 	private MainGameBoardPane mainGameBoardPaneClient;
@@ -376,10 +377,20 @@ public class MenuFrame extends JFrame implements MouseListener {
 			quit();
 		}
 		if (source == single) {
-
+			this_is_Single = true;
 			menu_pane.removeAll();
+			
+			quit_while_playing = new JLabel(new ImageIcon(
+					getClass().getClassLoader().getResource("resources/images/quit.png")));
+			quit_while_playing.addMouseListener(MenuFrame.this);
+			
+			human_Computer_BoardPane = new HumanAndComputerBoardPane();
+			
 			menu_pane.add(human_Computer_BoardPane, BorderLayout.CENTER);
-			menu_pane.add(mainGameBoardPane.getTurnPane(), BorderLayout.EAST);
+			
+			human_Computer_BoardPane.setTurnPane(new JPanel(new GridLayout(1, 1)));
+			human_Computer_BoardPane.getTurnPane().add(quit_while_playing);
+			menu_pane.add(human_Computer_BoardPane.getTurnPane(), BorderLayout.EAST);
 			menu_pane.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
 			pack();
 			repaint();
@@ -410,11 +421,19 @@ public class MenuFrame extends JFrame implements MouseListener {
 					getClass().getClassLoader().getResource("resources/images/quit.png")));
 			quit_while_playing.addMouseListener(MenuFrame.this);
 
-			grid_playing_option = new JPanel(new GridLayout(1, 1));
-			grid_playing_option.add(quit_while_playing, BorderLayout.SOUTH);
-			menu_pane.add(grid_playing_option, BorderLayout.WEST);
+//			grid_playing_option = new JPanel(new GridLayout(1, 1));
+//			grid_playing_option.add(quit_while_playing, BorderLayout.SOUTH);
+//			menu_pane.add(grid_playing_option, BorderLayout.WEST);
+			
+			mainGameBoardPane = new MainGameBoardPane(); // local
 			
 			menu_pane.add(mainGameBoardPane, BorderLayout.CENTER);
+			
+			
+			
+			mainGameBoardPane.setTurnPane(new JPanel(new GridLayout(1, 1)));
+			
+			mainGameBoardPane.getTurnPane().add(quit_while_playing);
 			menu_pane.add(mainGameBoardPane.getTurnPane(), BorderLayout.EAST);
 			menu_pane.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
 			pack();
@@ -487,10 +506,19 @@ public class MenuFrame extends JFrame implements MouseListener {
 				join_dlg.setVisible(true);
 				mouse_state = false;
 			} else if (source == quit_while_playing) {
-				if(this_is_Local == true){
+				if(this_is_Single == true){
+					this_is_Single = false;
+					menu_pane.removeAll();
+					menu_pane.add(grid_menu, BorderLayout.SOUTH);
+					human_Computer_BoardPane.removeAll();
+					human_Computer_BoardPane = null;
+				}
+				else if(this_is_Local == true){
 					this_is_Local = false;
 					menu_pane.removeAll();
 					menu_pane.add(grid_menu, BorderLayout.SOUTH);
+					mainGameBoardPane.removeAll();
+					mainGameBoardPane = null;
 				}
 				else{
 					try {

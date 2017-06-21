@@ -72,6 +72,7 @@ public class HumanAndComputerBoardPane extends JPanel {
 	// private ImageIcon white_turn_img = new
 	// ImageIcon(getClass().getClassLoader().getResource("resources/images/whiteturn.png"));
 	private JTextField txt_turn = new JTextField(20);
+	
 
 	public void start_As_Server() {
 		tranfer_Data_Thread = new TranferData_Thread();
@@ -192,6 +193,10 @@ public class HumanAndComputerBoardPane extends JPanel {
 	public JPanel getTurnPane() {
 		return turn_pane;
 	}
+	
+	public void setTurnPane(JPanel panel) {
+		turn_pane = panel;
+	}
 
 	public HumanAndComputerBoardPane() {
 
@@ -200,7 +205,7 @@ public class HumanAndComputerBoardPane extends JPanel {
 		player_turn_2 = new JLabel(
 				new ImageIcon(getClass().getClassLoader().getResource("resources/images/enemyturn_disable.png")));
 
-		turn_pane = new JPanel(new GridLayout(2, 1));
+		turn_pane = new JPanel(new GridLayout(3, 1));
 
 		// setSize(new Dimension(600, 600));
 		setPreferredSize(new Dimension(600, 600));

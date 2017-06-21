@@ -239,6 +239,10 @@ public class MainGameBoardPane extends JPanel {
 	public JPanel getTurnPane() {
 		return turn_pane;
 	}
+	
+	public void setTurnPane(JPanel panel) {
+		turn_pane = panel;
+	}
 
 	public MainGameBoardPane() {
 
