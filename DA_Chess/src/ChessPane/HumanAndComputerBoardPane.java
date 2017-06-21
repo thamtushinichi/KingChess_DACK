@@ -19,8 +19,11 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import javax.print.attribute.standard.RequestingUserName;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -37,27 +40,27 @@ import players.Player2;
 public class HumanAndComputerBoardPane extends JPanel {
 	private Player1 P1 = new Player1();
 	private Player2 P2 = new Player2();
-	private final int Divide = 600 / 8; // 600 là kích thước bề ngang hoặc rộng
-										// của bàn cờ, 8 là số ô cờ
-	// chúng ta tính được cạnh của 1 ô cờ là bao nhiêu , đáp án: 75 pixel
+	private final int Divide = 600 / 8; // 600 lÃ  kÃ­ch thÆ°á»›c bá»� ngang hoáº·c rá»™ng
+										// cá»§a bÃ n cá»�, 8 lÃ  sá»‘ Ã´ cá»�
+	// chÃºng ta tÃ­nh Ä‘Æ°á»£c cáº¡nh cá»§a 1 Ã´ cá»� lÃ  bao nhiÃªu , Ä‘Ã¡p Ã¡n: 75 pixel
 	// private int move=0;
-	private Rectangle2D rec; // 1 ô cờ là 1 Rectangle2D
+	private Rectangle2D rec; // 1 Ã´ cá»� lÃ  1 Rectangle2D
 	private short players_turn = 1;
 	private boolean GameOver = false; // check game over
-	private boolean local = true;// check xem chế độ chơi là local 2 người chơi
+	private boolean local = true;// check xem cháº¿ Ä‘á»™ chÆ¡i lÃ  local 2 ngÆ°á»�i chÆ¡i
 									// ko
-	private boolean game_Started = true;// check xem game đã bắt đầu chưa
-	private String Box; // đóng gói dữ liệu để gửi đi
-	private PrintWriter out; // ghi dữ liệu
-	private boolean this_is_Server; // đây là server
-	private boolean this_is_Client; // đây là client
-	// Set up ip và port there
+	private boolean game_Started = true;// check xem game Ä‘Ã£ báº¯t Ä‘áº§u chÆ°a
+	private String Box; // Ä‘Ã³ng gÃ³i dá»¯ liá»‡u Ä‘á»ƒ gá»­i Ä‘i
+	private PrintWriter out; // ghi dá»¯ liá»‡u
+	private boolean this_is_Server; // Ä‘Ã¢y lÃ  server
+	private boolean this_is_Client; // Ä‘Ã¢y lÃ  client
+	// Set up ip vÃ  port there
 	private String myIp_Address;
 	private String myPort;
 	// init socket
 	private ServerSocket serverSocket;
-	private Socket Sock; // init Sock giao tiếp giữa 2 cổng
-	private BufferedReader in; // đọc dữ liệu
+	private Socket Sock; // init Sock giao tiáº¿p giá»¯a 2 cá»•ng
+	private BufferedReader in; // Ä‘á»�c dá»¯ liá»‡u
 	// private Recv_Thread rec_from;
 	private TranferData_Thread tranfer_Data_Thread;
 
@@ -130,7 +133,7 @@ public class HumanAndComputerBoardPane extends JPanel {
 			dialog.pack();
 			dialog.setVisible(true);
 
-			// kết thúc việc start server và server lúc này đang chờ kết nối
+			// káº¿t thÃºc viá»‡c start server vÃ  server lÃºc nÃ y Ä‘ang chá»� káº¿t ná»‘i
 
 		} catch (NumberFormatException | IOException e) {
 			// TODO Auto-generated catch block
@@ -254,7 +257,7 @@ public class HumanAndComputerBoardPane extends JPanel {
 				g2.fill(rec);
 			}
 		}
-		// đặt quân cờ vào vị trí các ô cờ
+		// Ä‘áº·t quÃ¢n cá»� vÃ o vá»‹ trÃ­ cÃ¡c Ã´ cá»�
 		Point positionP;
 		int postX;
 		int postY;
@@ -322,7 +325,7 @@ public class HumanAndComputerBoardPane extends JPanel {
 		@Override
 		public void mouseReleased(MouseEvent e) {
 
-			// khi nhả quân cờ ra thì chạy hàm này
+			// khi nháº£ quÃ¢n cá»� ra thÃ¬ cháº¡y hÃ m nÃ y
 			boolean can_send = false; // dung de send sau khi danh 1 quan co
 										// sang cho doi phuong
 			if (!isGameOver()) {
@@ -344,7 +347,7 @@ public class HumanAndComputerBoardPane extends JPanel {
 					if (isLocal() || isThis_is_Server()) {
 						// con dung de check dang la server
 						if (P1.GetInHand() < 33 && P1.GetInHand() > 24) {
-							// Inhand la quan địch
+							// Inhand la quan Ä‘á»‹ch
 							for (int i = 1; i < 17; i++) {
 								samePosition = P2.returnPosition(i);
 								if (samePosition.x == newP.x && samePosition.y == newP.y) {
@@ -357,29 +360,29 @@ public class HumanAndComputerBoardPane extends JPanel {
 						if (!(newP.x == presentP.x && newP.y == presentP.y)) {
 							if (P1.checkMove(newP, P1.GetInHand())) {
 								int aa = P1.GetInHand();
-								// check nếu như di chuyển đến ô không hợp lệ
+								// check náº¿u nhÆ° di chuyá»ƒn Ä‘áº¿n Ã´ khÃ´ng há»£p lá»‡
 								boolean flag = false;
 								for (int i = 1; i <= 32; i++) {
 									if (P1.GetInHand() != i) {
-										// check nếu ở đây có quân cờ
+										// check náº¿u á»Ÿ Ä‘Ã¢y cÃ³ quÃ¢n cá»�
 										if (i < 17) {
-											// trả về nếu như trên đường đi gặp
-											// cản trở và không thể di chuyển
+											// tráº£ vá»� náº¿u nhÆ° trÃªn Ä‘Æ°á»�ng Ä‘i gáº·p
+											// cáº£n trá»Ÿ vÃ  khÃ´ng thá»ƒ di chuyá»ƒn
 											flag = P1.checkWay(newP, P2.returnPosition(i), P1.GetInHand());
 										} else {
 											flag = P1.checkWay(newP, P1.returnPosition(i), P1.GetInHand());
 										}
 										if (flag == true) {
-											break; // có quân cờ ở đây
+											break; // cÃ³ quÃ¢n cá»� á»Ÿ Ä‘Ã¢y
 										}
 									}
 								}
 								// ________________________
 								if (!flag && P1.piece_Already_There(newP)) {
-									// nếu như di chuyển hợp lệ và check có quân
-									// cờ đối phương tại vị trí sắp đến ko
-									// check nếu vị trí mới có chiếu vua Black
-									// không
+									// náº¿u nhÆ° di chuyá»ƒn há»£p lá»‡ vÃ  check cÃ³ quÃ¢n
+									// cá»� Ä‘á»‘i phÆ°Æ¡ng táº¡i vá»‹ trÃ­ sáº¯p Ä‘áº¿n ko
+									// check náº¿u vá»‹ trÃ­ má»›i cÃ³ chiáº¿u vua Black
+									// khÃ´ng
 									boolean king2 = true;
 									Point myOld = new Point();
 									Point myOldTemp = P1.returnPosition(P1.GetInHand());
@@ -390,14 +393,14 @@ public class HumanAndComputerBoardPane extends JPanel {
 									boolean kill = false;
 									int killed = -1;
 									boolean end_move = true;
-									// bắt đầu check king
+									// báº¯t Ä‘áº§u check king
 									for (int k = 1; k < 17; k++) {
 										other = P2.returnPosition(k);
 										if (newP.x == other.x && newP.y == other.y) {
 											int inHand = P1.GetInHand();
 											if (inHand > 24 && P1.returnsoliderSeen(inHand)) {
-												kill = true;// có quân cờ đã
-															// chết
+												kill = true;// cÃ³ quÃ¢n cá»� Ä‘Ã£
+															// cháº¿t
 												f.x = other.x;
 												f.y = other.y;
 												P2.killedPiece(k);// player 2
@@ -420,11 +423,11 @@ public class HumanAndComputerBoardPane extends JPanel {
 										}
 									}
 									if (end_move) {
-										P1.changePosition(newP, P1.GetInHand()); // kết
-																					// thúc
-																					// sự
+										P1.changePosition(newP, P1.GetInHand()); // káº¿t
+																					// thÃºc
+																					// sá»±
 																					// di
-																					// chuyển
+																					// chuyá»ƒn
 																					// P1
 										if (P2.checkEmenyGameOver(P1)) {
 											// neu nhu P2 game over
@@ -436,30 +439,30 @@ public class HumanAndComputerBoardPane extends JPanel {
 
 										if (P1.GetInHand() >= 25 && P1.GetInHand() <= 32) {
 											Point pawn_position = P1.returnPosition(P1.GetInHand());
-											// check tốt đã di chuyển thành công
-											// chưa
+											// check tá»‘t Ä‘Ã£ di chuyá»ƒn thÃ nh cÃ´ng
+											// chÆ°a
 											if (pawn_position.y != 7) {
 												P1.moved_Success(P1.GetInHand());
 											}
-											// nếu là quân tốt thì check tiếp có
-											// nằm ở vị trí được sắc phong Hậu
-											// không
+											// náº¿u lÃ  quÃ¢n tá»‘t thÃ¬ check tiáº¿p cÃ³
+											// náº±m á»Ÿ vá»‹ trÃ­ Ä‘Æ°á»£c sáº¯c phong Háº­u
+											// khÃ´ng
 
 											if (pawn_position.y == 1) {
 												P1.honor_Queen(P1.GetInHand());
 											}
 										}
 									}
-									P1.checkKing(false);// ko check king nữa
+									P1.checkKing(false);// ko check king ná»¯a
 									if (P1.see_EnemyKingIsChecked(P2)) {
-										// nếu vua của tôi bị chiếu nếu tôi di
-										// chuyen, vì vậy
-										// tôi không thể di chuyển quân cờ và
-										// phải return back to old position
+										// náº¿u vua cá»§a tÃ´i bá»‹ chiáº¿u náº¿u tÃ´i di
+										// chuyen, vÃ¬ váº­y
+										// tÃ´i khÃ´ng thá»ƒ di chuyá»ƒn quÃ¢n cá»� vÃ 
+										// pháº£i return back to old position
 										P1.changePosition(myOld, P1.GetInHand());
-										P1.checkKing(true);// set king bị check
-															// là true
-										end_move = false;// chưa kết thúc được
+										P1.checkKing(true);// set king bá»‹ check
+															// lÃ  true
+										end_move = false;// chÆ°a káº¿t thÃºc Ä‘Æ°á»£c
 
 									}
 									if (kill && P1.returncheckKing()) {
@@ -468,12 +471,12 @@ public class HumanAndComputerBoardPane extends JPanel {
 									}
 									if (!P1.returncheckKing()) {
 										if (P2.see_EnemyKingIsChecked(P1)) {
-											// nếu như vua đối phương bị check
+											// náº¿u nhÆ° vua Ä‘á»‘i phÆ°Æ¡ng bá»‹ check
 											P2.checkKing(true);
 											end_move = false;
-											// chưa kết thúc lượt được
+											// chÆ°a káº¿t thÃºc lÆ°á»£t Ä‘Æ°á»£c
 											if (P2.checkEmenyGameOver(P1)) {
-												// nếu như Player 1 game over
+												// náº¿u nhÆ° Player 1 game over
 												GameOver();
 												Box = Integer.toString(P2.GetInHand()) + Integer.toString(newP.x)
 														+ Integer.toString(newP.y);
@@ -500,13 +503,13 @@ public class HumanAndComputerBoardPane extends JPanel {
 								}
 							}
 						}
-						// khi kết thúc lượt thì check
+						// khi káº¿t thÃºc lÆ°á»£t thÃ¬ check
 
 						P1.SetInHand(-1);
 						repaint();
 						if (can_send && ((isThis_is_Server() || isThis_is_Client()))) {
-							// chỗ này để thực hiện việc send đi dữ liệu
-							// chạy hàm Send_move(); để send dữ liệu
+							// chá»— nÃ y Ä‘á»ƒ thá»±c hiá»‡n viá»‡c send Ä‘i dá»¯ liá»‡u
+							// cháº¡y hÃ m Send_move(); Ä‘á»ƒ send dá»¯ liá»‡u
 							Send_move();
 
 						}
@@ -522,8 +525,8 @@ public class HumanAndComputerBoardPane extends JPanel {
 				else if (P2.GetInHand() != -1) {
 
 					if (isLocal() || isThis_is_Client()) {
-						// chỗ này để check có phải là đánh local hoặc đánh
-						// online hình thức client
+						// chá»— nÃ y Ä‘á»ƒ check cÃ³ pháº£i lÃ  Ä‘Ã¡nh local hoáº·c Ä‘Ã¡nh
+						// online hÃ¬nh thá»©c client
 						newP = P2.getPixelPoint(P2.GetInHand());
 						newP.x = newP.x / Divide;
 						newP.y = newP.y / Divide;
@@ -548,7 +551,7 @@ public class HumanAndComputerBoardPane extends JPanel {
 								boolean flag = false;
 								for (int i = 1; i <= 32; i++) {
 									if (P2.GetInHand() != i) {
-										// quân chọn không phải quân được duyệt
+										// quÃ¢n chá»�n khÃ´ng pháº£i quÃ¢n Ä‘Æ°á»£c duyá»‡t
 										if (i < 17) {
 											flag = P2.checkWay(newP, P2.returnPosition(i), P2.GetInHand());
 
@@ -619,9 +622,9 @@ public class HumanAndComputerBoardPane extends JPanel {
 										}
 
 									}
-									// đồng nghĩa với king2 =true;
+									// Ä‘á»“ng nghÄ©a vá»›i king2 =true;
 									if (end_move) {
-										// khúc này là đã kết thúc lượt P2
+										// khÃºc nÃ y lÃ  Ä‘Ã£ káº¿t thÃºc lÆ°á»£t P2
 										P2.changePosition(newP, P2.GetInHand());
 
 										if (P1.checkEmenyGameOver(P2)) {
@@ -634,15 +637,15 @@ public class HumanAndComputerBoardPane extends JPanel {
 
 										if (P2.GetInHand() >= 9 && P2.GetInHand() <= 16) {
 											Point pawn_position1 = P2.returnPosition(P2.GetInHand());
-											// check tốt đã di chuyển thành công
-											// chưa
+											// check tá»‘t Ä‘Ã£ di chuyá»ƒn thÃ nh cÃ´ng
+											// chÆ°a
 
 											if (pawn_position1.y != 2) {
 												P2.moved_Success(P2.GetInHand());
 											}
-											// nếu là quân tốt thì check tiếp có
-											// nằm ở vị trí được sắc phong Hậu
-											// không
+											// náº¿u lÃ  quÃ¢n tá»‘t thÃ¬ check tiáº¿p cÃ³
+											// náº±m á»Ÿ vá»‹ trÃ­ Ä‘Æ°á»£c sáº¯c phong Háº­u
+											// khÃ´ng
 
 											if (pawn_position1.y == 8) {
 												P2.honor_Queen(P2.GetInHand());
@@ -651,9 +654,9 @@ public class HumanAndComputerBoardPane extends JPanel {
 									}
 									P2.checkKing(false);
 									if (P2.see_EnemyKingIsChecked(P1)) {
-										// nếu king bị check thì không được di
-										// chuyển
-										// và quân cờ phải bị trở về vị trí cũ
+										// náº¿u king bá»‹ check thÃ¬ khÃ´ng Ä‘Æ°á»£c di
+										// chuyá»ƒn
+										// vÃ  quÃ¢n cá»� pháº£i bá»‹ trá»Ÿ vá»� vá»‹ trÃ­ cÅ©
 										P2.changePosition(myOldP, P2.GetInHand());
 										P2.checkKing(true);
 										end_move = false;
@@ -665,13 +668,13 @@ public class HumanAndComputerBoardPane extends JPanel {
 										P2.changePosition(myOldP, P2.GetInHand());
 									}
 									if (!P2.returncheckKing()) {
-										// mean: di chuyen mà King2 không bi
-										// chiếu
+										// mean: di chuyen mÃ  King2 khÃ´ng bi
+										// chiáº¿u
 										if (P1.see_EnemyKingIsChecked(P2)) {
-											// nếu king 1 bị check thì không
-											// được di chuyển
-											// và quân cờ phải bị trở về vị trí
-											// cũ
+											// náº¿u king 1 bá»‹ check thÃ¬ khÃ´ng
+											// Ä‘Æ°á»£c di chuyá»ƒn
+											// vÃ  quÃ¢n cá»� pháº£i bá»‹ trá»Ÿ vá»� vá»‹ trÃ­
+											// cÅ©
 											P1.checkKing(true);
 											end_move = false;
 											if (P1.checkEmenyGameOver(P2)) {
@@ -700,7 +703,7 @@ public class HumanAndComputerBoardPane extends JPanel {
 						P2.SetInHand(-1);
 						repaint();
 						if (can_send && ((isThis_is_Server() || isThis_is_Client()))) {
-							// thực hiện send dữ liệu
+							// thá»±c hiá»‡n send dá»¯ liá»‡u
 							// Send_move();
 							Send_move();
 						}
@@ -815,7 +818,7 @@ public class HumanAndComputerBoardPane extends JPanel {
 		return false;
 	}
 
-	// đổi vị trí (x,y) khi nhan 1 quan co sang pixel sang pixel
+	// Ä‘á»•i vá»‹ trÃ­ (x,y) khi nhan 1 quan co sang pixel sang pixel
 	public boolean handle_when_click_Piece(int x, int y) {
 		if (players_turn == 1 && P1.GetInHand() != -1) {
 			P1.changePixel(x, y, P1.GetInHand());
@@ -835,7 +838,7 @@ public class HumanAndComputerBoardPane extends JPanel {
 		return myX;
 	}
 
-	// đổi cột sang tọa độ Y
+	// Ä‘á»•i cá»™t sang tá»�a Ä‘á»™ Y
 	private int colToY(int column) {
 		int myY;
 		int width = getWidth();
@@ -866,13 +869,15 @@ public class HumanAndComputerBoardPane extends JPanel {
 					int togo=0;
 					int a=0;
 					int b=0;
+					
 					while(!endMoved)
 					{
-						 togo= random.nextInt((16-1)+1)+1;
+						
+						Point end= chooseEndPoint();
+						int piece= choosePieces();
 						 a= random.nextInt((8-1)+1)+1;
 						 b= random.nextInt((8-1)+1)+1;
-						//P2.SetInHand(togo);
-						endMoved=endMoved(togo,new Point(a,b));
+						endMoved=endMoved(piece,new Point(a,b));
 					}
 					
 					repaint();
@@ -888,8 +893,8 @@ public class HumanAndComputerBoardPane extends JPanel {
 		Point samePosition;
 		boolean end_move=true;
 		if (isLocal() || isThis_is_Client()) {
-			// chỗ này để check có phải là đánh local hoặc đánh
-			// online hình thức client
+			// chá»— nÃ y Ä‘á»ƒ check cÃ³ pháº£i lÃ  Ä‘Ã¡nh local hoáº·c Ä‘Ã¡nh
+			// online hÃ¬nh thá»©c client
 			//newP = P2.getPixelPoint(P2.GetInHand());
 			//newP.x = newP.x / Divide;
 			//newP.y = newP.y / Divide;
@@ -914,7 +919,7 @@ public class HumanAndComputerBoardPane extends JPanel {
 					boolean flag = false;
 					for (int i = 1; i <= 32; i++) {
 						if (P2.GetInHand() != i) {
-							// quân chọn không phải quân được duyệt
+							// quÃ¢n chá»�n khÃ´ng pháº£i quÃ¢n Ä‘Æ°á»£c duyá»‡t
 							if (i < 17) {
 								flag = P2.checkWay(newP, P2.returnPosition(i), P2.GetInHand());
 
@@ -985,9 +990,9 @@ public class HumanAndComputerBoardPane extends JPanel {
 							}
 
 						}
-						// đồng nghĩa với king2 =true;
+						// Ä‘á»“ng nghÄ©a vá»›i king2 =true;
 						if (end_move) {
-							// khúc này là đã kết thúc lượt P2
+							// khÃºc nÃ y lÃ  Ä‘Ã£ káº¿t thÃºc lÆ°á»£t P2
 							P2.changePosition(newP, P2.GetInHand());
 
 							if (P1.checkEmenyGameOver(P2)) {
@@ -1000,15 +1005,15 @@ public class HumanAndComputerBoardPane extends JPanel {
 
 							if (P2.GetInHand() >= 9 && P2.GetInHand() <= 16) {
 								Point pawn_position1 = P2.returnPosition(P2.GetInHand());
-								// check tốt đã di chuyển thành công
-								// chưa
+								// check tá»‘t Ä‘Ã£ di chuyá»ƒn thÃ nh cÃ´ng
+								// chÆ°a
 
 								if (pawn_position1.y != 2) {
 									P2.moved_Success(P2.GetInHand());
 								}
-								// nếu là quân tốt thì check tiếp có
-								// nằm ở vị trí được sắc phong Hậu
-								// không
+								// náº¿u lÃ  quÃ¢n tá»‘t thÃ¬ check tiáº¿p cÃ³
+								// náº±m á»Ÿ vá»‹ trÃ­ Ä‘Æ°á»£c sáº¯c phong Háº­u
+								// khÃ´ng
 
 								if (pawn_position1.y == 8) {
 									P2.honor_Queen(P2.GetInHand());
@@ -1017,9 +1022,9 @@ public class HumanAndComputerBoardPane extends JPanel {
 						}
 						P2.checkKing(false);
 						if (P2.see_EnemyKingIsChecked(P1)) {
-							// nếu king bị check thì không được di
-							// chuyển
-							// và quân cờ phải bị trở về vị trí cũ
+							// náº¿u king bá»‹ check thÃ¬ khÃ´ng Ä‘Æ°á»£c di
+							// chuyá»ƒn
+							// vÃ  quÃ¢n cá»� pháº£i bá»‹ trá»Ÿ vá»� vá»‹ trÃ­ cÅ©
 							P2.changePosition(myOldP, P2.GetInHand());
 							P2.checkKing(true);
 							end_move = false;
@@ -1031,13 +1036,13 @@ public class HumanAndComputerBoardPane extends JPanel {
 							P2.changePosition(myOldP, P2.GetInHand());
 						}
 						if (!P2.returncheckKing()) {
-							// mean: di chuyen mà King2 không bi
-							// chiếu
+							// mean: di chuyen mÃ  King2 khÃ´ng bi
+							// chiáº¿u
 							if (P1.see_EnemyKingIsChecked(P2)) {
-								// nếu king 1 bị check thì không
-								// được di chuyển
-								// và quân cờ phải bị trở về vị trí
-								// cũ
+								// náº¿u king 1 bá»‹ check thÃ¬ khÃ´ng
+								// Ä‘Æ°á»£c di chuyá»ƒn
+								// vÃ  quÃ¢n cá»� pháº£i bá»‹ trá»Ÿ vá»� vá»‹ trÃ­
+								// cÅ©
 								P1.checkKing(true);
 								end_move = false;
 								if (P1.checkEmenyGameOver(P2)) {
@@ -1068,7 +1073,7 @@ public class HumanAndComputerBoardPane extends JPanel {
 			P2.SetInHand(-1);
 			repaint();
 			if (((isThis_is_Server() || isThis_is_Client()))) {
-				// thực hiện send dữ liệu
+				// thá»±c hiá»‡n send dá»¯ liá»‡u
 				// Send_move();
 				Send_move();
 			}
@@ -1086,8 +1091,38 @@ public class HumanAndComputerBoardPane extends JPanel {
 		}
 		return false;
 	}
-	// điều khiển loại game nào ví dụ khi nào là lượt player 1 đi, khi nào đến
-	// player 2, khi nào
+	public Point chooseEndPoint() {
+		Random random= new Random();
+		
+		return null;
+	}
+
+	public int choosePieces() {
+		Random random= new Random();
+		List allPieces= getAllPieceComputer();
+		int piece= random.nextInt(((allPieces.size()-1)-0)+1)+0;
+		return (int) allPieces.get(piece);
+	}
+
+	private List getAllPieceComputer() {
+		// TODO Auto-generated method stub
+		List allPieces= new ArrayList<Integer>();
+		for(int i=1;i<=16;i++)
+		{
+			Point temp= P2.returnPosition(i);
+			if(temp.x==20 && temp.y==20)
+			{
+				continue;
+			}
+			allPieces.add(i);
+		}
+		return allPieces;
+	}
+
+	
+
+	// Ä‘iá»�u khiá»ƒn loáº¡i game nÃ o vÃ­ dá»¥ khi nÃ o lÃ  lÆ°á»£t player 1 Ä‘i, khi nÃ o Ä‘áº¿n
+	// player 2, khi nÃ o
 	public boolean controll_Game_Type(int x, int y) {
 		if ((isThis_is_Server() == true || isThis_is_Client() == true) && isGame_Started()) {
 			if (isThis_is_Server() && players_turn == 1) {
@@ -1140,9 +1175,9 @@ public class HumanAndComputerBoardPane extends JPanel {
 	class TranferData_Thread extends Thread {
 		public synchronized void run() {
 			while (true) {
-				// lắng nghe
+				// láº¯ng nghe
 				try {
-					Box = in.readLine(); // đọc dữ liệu
+					Box = in.readLine(); // Ä‘á»�c dá»¯ liá»‡u
 
 				} catch (IOException ex) {
 					ex.printStackTrace();
@@ -1169,10 +1204,10 @@ public class HumanAndComputerBoardPane extends JPanel {
 						P2.killedPiece(P1.getPiece_Enemy_Already_There(new Point(newX, newY), P2));
 						P2.checkKing(false);
 						if (P2.see_EnemyKingIsChecked(P1)) {
-							// nếu P1 di chuyển mà làm cho King của P1 bị check
-							// thì
-							// không được di chuyển
-							P2.checkKing(true); // mean P2 chiếu Vua P1
+							// náº¿u P1 di chuyá»ƒn mÃ  lÃ m cho King cá»§a P1 bá»‹ check
+							// thÃ¬
+							// khÃ´ng Ä‘Æ°á»£c di chuyá»ƒn
+							P2.checkKing(true); // mean P2 chiáº¿u Vua P1
 							if (P2.checkEmenyGameOver(P1)) {
 								// mean :
 								System.out.println("Game over P1 win!!!");
