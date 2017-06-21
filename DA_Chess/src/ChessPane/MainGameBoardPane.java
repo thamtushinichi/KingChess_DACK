@@ -72,6 +72,7 @@ public class MainGameBoardPane extends JPanel {
 	private JButton cancel_button = new JButton("Cancel");
 	private JLabel cancel;
 	private boolean check_cancel;
+	private boolean is_connecting_error;
 	
 	private Mouse_when_Move mouse_Drag_And_Drop = new Mouse_when_Move();
 	private Mouse_Here mouseHereEvent = new Mouse_Here();
@@ -88,8 +89,16 @@ public class MainGameBoardPane extends JPanel {
 		return check_cancel;
     }
 	
+	public boolean getConnectingError() {
+		return is_connecting_error;
+    }
+	
 	public void setCheckCancel(boolean check) {
 		check_cancel = check;
+    }
+	
+	public void setConnectingError(boolean check) {
+		is_connecting_error = check;
     }
 	
 	public Socket getSocket() {
@@ -109,7 +118,7 @@ public class MainGameBoardPane extends JPanel {
 	}
 
 	public void start_As_Server() {
-		check_cancel = false;
+		//check_cancel = false;
 		tranfer_Data_Thread = new TranferData_Thread();
 		setGame_Started(false);
 
@@ -187,6 +196,15 @@ public class MainGameBoardPane extends JPanel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("ERROR : serverSocket");
+			
+			
+			
+			if(getCheckCancel() == false){
+				JOptionPane.showConfirmDialog(getParent(),
+						"Address or Port already existed!!!\n", "Connecting Error",
+						JOptionPane.DEFAULT_OPTION);
+				setConnectingError(true);
+			}
 		}
 		setLocal(false);
 		repaint();
@@ -217,7 +235,12 @@ public class MainGameBoardPane extends JPanel {
 		} catch (NumberFormatException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println("ERROR : serverSocket");
+			System.out.println("ERROR : clientSocket");
+			
+			setConnectingError(true);
+			JOptionPane.showConfirmDialog(getParent(),
+					"Can't find room!!!\n", "Connecting Error",
+					JOptionPane.DEFAULT_OPTION);
 		}
 
 		repaint();
@@ -246,6 +269,9 @@ public class MainGameBoardPane extends JPanel {
 
 	public MainGameBoardPane() {
 
+		setCheckCancel(false);
+		setConnectingError(false);
+		
 		player_turn_1 = new JLabel(
 				new ImageIcon(getClass().getClassLoader().getResource("resources/images/yourturn_enable.png")));
 		player_turn_2 = new JLabel(

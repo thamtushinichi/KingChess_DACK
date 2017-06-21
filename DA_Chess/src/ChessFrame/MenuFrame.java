@@ -238,7 +238,7 @@ public class MenuFrame extends JFrame implements MouseListener {
 						mainGameBoardPaneServer.setThis_is_Client(false);
 						mainGameBoardPaneServer.start_As_Server();
 						// set ip and port
-						if (mainGameBoardPaneServer.getCheckCancel() == false) {
+						if (mainGameBoardPaneServer.getCheckCancel() == false && mainGameBoardPaneServer.getConnectingError() == false) {
 							menu_pane.removeAll();
 
 							quit_while_playing = new JLabel(new ImageIcon(
@@ -274,27 +274,30 @@ public class MenuFrame extends JFrame implements MouseListener {
 						mainGameBoardPaneClient.setThis_is_Client(true);
 						mainGameBoardPaneClient.start_As_Client();
 						// set ip and port
-						menu_pane.removeAll();
-						
-						quit_while_playing = new JLabel(new ImageIcon(
-								getClass().getClassLoader().getResource("resources/images/quit.png")));
-						quit_while_playing.addMouseListener(MenuFrame.this);
+						if(mainGameBoardPaneClient.getConnectingError() == false){
+							menu_pane.removeAll();
+							
+							quit_while_playing = new JLabel(new ImageIcon(
+									getClass().getClassLoader().getResource("resources/images/quit.png")));
+							quit_while_playing.addMouseListener(MenuFrame.this);
 
-//						grid_playing_option = new JPanel(new GridLayout(1, 1));
-//						grid_playing_option.add(quit_while_playing, BorderLayout.SOUTH);
-//						menu_pane.add(grid_playing_option, BorderLayout.WEST);
-						
-						menu_pane.add(mainGameBoardPaneClient, BorderLayout.CENTER);
-						
-						mainGameBoardPaneClient.getTurnPane().add(quit_while_playing);
-						menu_pane.add(mainGameBoardPaneClient.getTurnPane(), BorderLayout.EAST);
-						menu_pane.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
-						mainFrame.setTitle("Client");
+//							grid_playing_option = new JPanel(new GridLayout(1, 1));
+//							grid_playing_option.add(quit_while_playing, BorderLayout.SOUTH);
+//							menu_pane.add(grid_playing_option, BorderLayout.WEST);
+							
+							menu_pane.add(mainGameBoardPaneClient, BorderLayout.CENTER);
+							
+							mainGameBoardPaneClient.getTurnPane().add(quit_while_playing);
+							menu_pane.add(mainGameBoardPaneClient.getTurnPane(), BorderLayout.EAST);
+							menu_pane.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+							mainFrame.setTitle("Client");
 
-						pack();
-						repaint();
-						JOptionPane.showMessageDialog(null, "You Are Black!", "Infomation",
-								JOptionPane.INFORMATION_MESSAGE);
+							pack();
+							repaint();
+							JOptionPane.showMessageDialog(null, "You Are Black!", "Infomation",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
+						
 					} else {
 						System.out.println("ERROR: làm cách nào đó bạn đã vào game mà không nhấn vào PLayOnline ->...");
 
@@ -484,18 +487,18 @@ public class MenuFrame extends JFrame implements MouseListener {
 				Dimension size = getSize();
 				setSize(size);
 			} else if (source == createroom) {
-				if(mainGameBoardPaneServer != null){
-					System.out.println("khac null");
-//					try {
-//						mainGameBoardPaneServer.getSocket().close();
-//					} catch (IOException e1) {
-//						// TODO Auto-generated catch block
-//						e1.printStackTrace();
-//					}
-					
-					mainGameBoardPaneServer.getServerThread().interrupt();
-					mainGameBoardPaneServer = null;
-				}
+//				if(mainGameBoardPaneServer != null){
+//					System.out.println("khac null");
+////					try {
+////						mainGameBoardPaneServer.getSocket().close();
+////					} catch (IOException e1) {
+////						// TODO Auto-generated catch block
+////						e1.printStackTrace();
+////					}
+//					
+//					mainGameBoardPaneServer.getServerThread().interrupt();
+//					mainGameBoardPaneServer = null;
+//				}
 				create_dlg = new PlayOnlineDialog(0);
 				create_dlg.setTitle("Create Room");
 				create_dlg.setVisible(true);
