@@ -166,7 +166,7 @@ public class MainGameBoardPane extends JPanel {
 			
 			dialog = new JDialog(SwingUtilities.windowForComponent(this));
 			dialog.setModal(true);
-			dialog.setLocation(new Point(470, 300));
+			dialog.setLocation(new Point(530, 300));
 			dialog.setPreferredSize(new Dimension(300, 150));
 
 			ImageIcon loading = new ImageIcon(getClass().getClassLoader().getResource("resources/images/pm_waiting.gif"));
